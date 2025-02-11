@@ -139,12 +139,12 @@ def main(command_arguments: argparse.Namespace, logger: logging.Logger) -> int:
    template_headers = df_template.columns.tolist()  # Extract the headers as a list
 
    if command_arguments.subjectsType == 'observational':
-      logger.info('Transforming DCC observational data to ARDaC case node')
+      logger.info('Transforming DCC observational subject data to ARDaC case node')
       node_file_path = Path(node_output_path, _constants.case_obs_file_name)
       df_obs_output = generate_observational_case_node(dcc_subjects_path, template_headers)
       df_obs_output.to_csv(node_file_path.as_posix(), sep='\t', index=False, header=True)
    elif command_arguments.subjectsType == 'clinical':
-      logger.info('Transforming DCC clinical data to ARDaC case node')
+      logger.info('Transforming DCC clinical subject data to ARDaC case node')
       node_file_path = Path(node_output_path, _constants.case_rct_file_name)
       df_rct_output = generate_clinical_case_node(dcc_subjects_path, template_headers)
       df_rct_output.to_csv(node_file_path.as_posix(), sep='\t', index=False, headers=True)
@@ -157,7 +157,7 @@ if __name__ == '__main__':
       description='''This utility generates ARDaC case nodes from observational or clinical trial DCC subject data provided in CSV format files.
          The user must provide the location of the ARDaC case node template file, the CSV file containing the DCC subject data, and the
          path to where the ARDaC case node file is to be written.''',
-      epilog=f'''Observational trial case node files are named \'{_constants.case_obs_file_name}\'.
+      epilog=f'''Observational case node files are named \'{_constants.case_obs_file_name}\'.
          Clinical case node files are named \'{_constants.case_rct_file_name}\'.  Case node files are written to the directory given by the --node_output_path argument.''')
    valid_log_level_names_mapping = logging.getLevelNamesMapping()
    valid_log_level_names_mapping.pop('NOTSET') # Remove NOTSET option value

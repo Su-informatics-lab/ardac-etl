@@ -18,3 +18,5 @@ audit_obs_file_name = 'audit_obs_' + dcc_release_string + '.tsv'
 audit_rct_file_name = 'audit_rct_' + dcc_release_string + '.tsv'
 audit_obs_unmatched_file_name = 'audit_qc_obs_' + dcc_release_string + '.tsv'
 audit_rct_unmatched_file_name = 'audit_qct_rct_' + dcc_release_string + '.tsv'
+# Set the demographic output file names
+demographic_template_file_name = 'submission_demographic_template.tsv'

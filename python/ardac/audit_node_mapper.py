@@ -38,7 +38,7 @@ def generate_observational_audit_node(obs_audit_path: Path, obs_case_path: Path,
 
    logger.info(f'Reading the observational ARDaC case file: {obs_case_path.as_posix()}')
    df_obs_case_input = pd.read_csv(obs_case_path.as_posix(), sep='\t', dtype=str)
-   logger.info(f'Done reading observational audit file')
+   logger.info(f'Done reading observational case file')
 
    # Step 1: Extract "*submitter_id" from df_obs_case and create case_table
    case_table = pd.DataFrame()
@@ -123,7 +123,7 @@ def generate_clinical_audit_node(rct_audit_path: Path, rct_case_path: Path, temp
 
    logger.info(f'Reading the observational ARDaC case file: {rct_case_path.as_posix()}')
    df_rct_case_input = pd.read_csv(rct_case_path.as_posix(), sep='\t', dtype=str)
-   logger.info(f'Done reading clinical audit file')
+   logger.info(f'Done reading clinical case file')
 
    # Step 1: Extract "*submitter_id" from df_rct_case and create case_table
    case_table = pd.DataFrame()
@@ -183,7 +183,7 @@ def main(command_arguments: argparse.Namespace, logger: logging.Logger) -> int:
    This function implements the steps needed for converting observational or clinical
    audit and case data into an ARDaC audit node.  The audit data is provided in a CSV file
    and converted to an ARDaC audit node file in TSV format containing the fields given in
-   the ARDaC case audit template.
+   the ARDaC audit template.
 
    Parameters
    ----------
@@ -192,12 +192,12 @@ def main(command_arguments: argparse.Namespace, logger: logging.Logger) -> int:
    logger : logging.Logger
       The logger to be used to provide user feedback
    """
-   template_path = Path(command_arguments.nodeTemplatesPath, _constants.case_template_file_name)
+   template_path = Path(command_arguments.nodeTemplatesPath, _constants.audit_template_file_name)
    dcc_audit_path = Path(command_arguments.dccAuditFile)
    node_output_path = Path(command_arguments.nodeOutputPath)
    
    if not template_path.is_file():
-      logger.critical('Cannot find case template file: ' + template_path.as_posix())
+      logger.critical('Cannot find audit template file: ' + template_path.as_posix())
       raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), template_path.as_posix())
    
    if not dcc_audit_path.is_file():
