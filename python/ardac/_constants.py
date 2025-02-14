@@ -20,3 +20,10 @@ audit_obs_unmatched_file_name = 'audit_qc_obs_' + dcc_release_string + '.tsv'
 audit_rct_unmatched_file_name = 'audit_qct_rct_' + dcc_release_string + '.tsv'
 # Set the demographic output file names
 demographic_template_file_name = 'submission_demographic_template.tsv'
+# Set the follow-up output file names
+follow_up_template_file_name = 'submission_follow_up_template.tsv'
+follow_up_obs_file_name = 'follow-up_obs_' + dcc_release_string + '.tsv'
+follow_up_qc_obs_file_name = 'follow-up_qc_obs_' + dcc_release_string + '.tsv'
+follow_up_rct_file_name = 'follow-up_rct_' + dcc_release_string + '.tsv'
+follow_up_qc_rct_file_name = 'follow-up_qc_rct_' + dcc_release_string + '.tsv'
+

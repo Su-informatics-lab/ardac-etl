@@ -190,6 +190,8 @@ if __name__ == '__main__':
       status = main(parsed_args, logger)
    except FileNotFoundError as e:
       logger.critical(f'Input file not found: {e}')
+   except ValueError as e:
+      logger.critical(f'Command line argument or parameter had a bad value: {e}')
    except Exception as e:
       logger.critical('Caught an exception', exc_info=True)
    
