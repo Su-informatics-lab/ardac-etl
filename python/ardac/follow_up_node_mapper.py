@@ -7,7 +7,7 @@ import pandas as pd
 from pathlib import Path
 import _constants
 
-def generate_observational_follow_up_node(obs_liver_scores_path: Path, obs_med_info_path: Path,  obs_vitals_path: Path, obs_soc_path: Path, obs_case_path: Path, template_headers: list[str]) -> pd.DataFrame:
+def generate_observational_follow_up_node(obs_liver_scores_path: Path, obs_med_info_path: Path,  obs_vitals_path: Path, obs_soc_path: Path, obs_case_path: Path, template_headers: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:
    """
    This function takes the path to the DCC observational liver scores, medical information, vitals,
    SOC, and the ARDaC observational case node files and the ARDaC follow-up template headers to
@@ -232,7 +232,7 @@ def generate_observational_follow_up_node(obs_liver_scores_path: Path, obs_med_i
 
    return df_output, df_qc
 
-def generate_clinical_follow_up_node(rct_liver_scores_path: Path, rct_med_info_path: Path,  rct_vitals_path: Path, rct_soc_path: Path, rct_case_path: Path, template_headers: list[str]) -> pd.DataFrame:
+def generate_clinical_follow_up_node(rct_liver_scores_path: Path, rct_med_info_path: Path,  rct_vitals_path: Path, rct_soc_path: Path, rct_case_path: Path, template_headers: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:
    """
    This function takes the path to the DCC clinical liver scores, medical information, vitals,
    SOC, and the ARDaC clinical case node files and the ARDaC follow-up template headers to
@@ -332,6 +332,7 @@ def generate_clinical_follow_up_node(rct_liver_scores_path: Path, rct_med_info_p
          df_output_rct.loc[output_row_index, "tlfb_number_drinks"] = row.get("tlfbnumd", None)
          df_output_rct.loc[output_row_index, "liver_score_date"] = row.get("liverdat", None)
    
+   # JRM: This was commented out in the Python workbook for some reason
    # # Process the medinfo and map values to follow-up rows
    # for _, row in tqdm(df_med_info.iterrows(), total=len(df_med_info), desc="Processing MedInfo"):
    #     usubjid = row["usubjid"]

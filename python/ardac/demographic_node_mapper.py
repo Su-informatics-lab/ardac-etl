@@ -190,6 +190,8 @@ def generate_clinical_demographic_node(rct_subjects_path: Path, rct_case_path: P
             except ValueError:
                 df_rct_output.loc[_, "days_to_death"] = None
 
+   return df_rct_output
+
 
 def main(command_arguments: argparse.Namespace, logger: logging.Logger) -> int:
    """

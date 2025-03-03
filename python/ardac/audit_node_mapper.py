@@ -7,7 +7,7 @@ import pandas as pd
 from pathlib import Path
 import _constants
 
-def generate_observational_audit_node(obs_audit_path: Path, obs_case_path: Path, template_headers: list[str]) -> pd.DataFrame:
+def generate_observational_audit_node(obs_audit_path: Path, obs_case_path: Path, template_headers: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:
    """
    This function takes the path to the DCC observational audit file, the ARDaC observational case node file,
    and the ARDaC audit node headers and produces the ARDaC audit node data for audit data that matches
@@ -92,7 +92,7 @@ def generate_observational_audit_node(obs_audit_path: Path, obs_case_path: Path,
    return df_obs_output, df_unmatched_obs
 
 
-def generate_clinical_audit_node(rct_audit_path: Path, rct_case_path: Path, template_headers: list[str]) -> pd.DataFrame:
+def generate_clinical_audit_node(rct_audit_path: Path, rct_case_path: Path, template_headers: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:
    """
    This function takes the path to the DCC clinical audit file, the ARDaC clinical case node file,
    and the ARDaC audit node headers to produce the ARDaC audit node data for audit data that matches
