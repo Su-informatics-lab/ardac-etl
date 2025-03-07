@@ -2,24 +2,39 @@
 ARDaC ETL workflows for DCC data release version 2.0.0.
 
 # Installation
-The python workflow is implemented and tested with python 3.13.2.  Make sure this version is installed and accessible by
-your environment.
+The python workflow is implemented and tested with python 3.13.2.  Furthermore, the NextFlow workflow scripts
+utilize Anaconda Python virtual environments.  Anaconda is chosen over the Python built-in virtual environment
+manager because NextFlow has a strong preference for using Anaconda virtual environments.
 
-## Configuration of python virtual environment
-1. Set the current directory to `ardac-etl` 
-2. Create a new virtual environment:
+If Anaconda is not already installed on your system, the small-scale Anaconda environment manager called
+_miniconda_ can be installed easily using the following [installation instructions](https://www.anaconda.com/docs/getting-started/miniconda/install#macos-linux-installation)
+
+The Anaconda base installation should be availble in your shell's search path after installation.  Open a new
+terminal window so that you are using the updated environment.
+
+To show your current search path:
 ```
-python3 -m venv ./penv
+echo $PATH
 ```
-3. Activate the new virtual environment:
+
+The path should contain the installtion location of Anaconda.  If not, you should seek help installing Anaconda
+from from your system administrator.
+
+The next task is to create the virtual environment using Anaconda.
+
+## Create the virtual environment
+- If `base` environment is not activated, do `conda activate base`. If you are in another virtual environment, then deactivate it first.
+- `cd /path/to/ardac-etl/python`
+- `conda env create -p ../venv -f conda.yml` creates a virtual environment at `/path/to/project/ardac-etl/venv` with packages and python installed accoridng to `conda.yml` 
+
+The created Python virtual environment at `/path/to/project/ardac-etl/venv` should be used for development of the
+ardac-etl project and used with the NextFlow workflow.  If you are using VSCode as your IDE, you should set the
+following configuration fields in the VSCode settings accordingly:
 ```
-source ./penv/bin/activate
+Python: Venv Path = ./venv
+Python: Conda Path = /path/to/your/conda/bin/conda
 ```
-4. Upgrade the `pip` installation:
-```
-python3 -m pip install --upgrade pip
-```
-5. Install needed python package dependencies:
-```
-python3 -m pip install -r requirements.txt
-```
+
+You may also need to set `Python: Locator = js` if the IDE cycles indefinitely on `Reactivating Terminals`.
+
+
