@@ -265,7 +265,7 @@ if __name__ == '__main__':
          The ARDaC case node input TSV file is also expected to be at this location''')
    valid_log_level_names_mapping = logging.getLevelNamesMapping()
    valid_log_level_names_mapping.pop('NOTSET') # Remove NOTSET option value
-   parser.add_argument('--version', action='version', version=f'{_constants.dcc_release_string}_{_constants.mapping_version_string}')
+   parser.add_argument('--version', action='version', version=f'DCC_VERSION={_constants.dcc_release_string},MAPPING_VERSION={_constants.mapping_version_string}')
    parser.add_argument('--log_level', dest='logLevel', default='INFO', choices=list(valid_log_level_names_mapping.keys()), help='A standard log level from the Python logger package')
    parser.add_argument('--node_templates_path', dest='nodeTemplatesPath', required=True, help='Path to the directory where the ARDaC node template TSV files are located')
    parser.add_argument('--subjects_type', dest='subjectsType', required=True, choices=['observational', 'clinical'], help='Value indicating if the input subject data is from clinical trial subjects or observational study subjects')
