@@ -3,6 +3,19 @@
 include { mapSubjectsTypeToCaseFile } from './utilities.nf'
 
 /*
+ * Get the DCC version that the mapping utilities support
+ */
+process GET_MAPPER_DCC_VERSION {
+   output:
+      path 'maper_dcc_version.txt', emit: mapper_dcc_version
+
+   script:
+   """
+   python case_node_maper.py --dcc_version > mapper_dcc_version.txt 
+   """
+}
+
+/*
  * Generate a case node from observational or clinical trial DCC subect data
  * provided in CSV format files.
  */

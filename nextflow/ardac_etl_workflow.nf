@@ -1,6 +1,7 @@
 #!/usr/bin/env nextflow
 
 include { CASE_NODE_MAPPER } from './modules/mappers.nf'
+include { GET_MAPPER_DCC_VERSION } from './modules/mappers.nf'
 
 workflow {
 
@@ -12,12 +13,14 @@ workflow {
    dcc_rct_subjects_path = input_dir.resolve(params.clinical_subjects_csv_file)
    node_output_path = input_dir.resolve(params.ardac_nodes_directory)
 
-   if (subjects_type == 'observational')
+   if (subjects_type == 'observational') {
       dcc_subjects_path = dcc_obs_subjects_path
-   else if (subjects_type == 'clinical')
+   } else if (subjects_type == 'clinical') {
       dcc_subjects_path = dcc_rct_subjects_path
-   else
-      error 'Unsupported subjects type: ' + subjects_type
+   } else {
+      log.info "Unsupported subject type given: ${subjects_type}"
+      error "Unsupported subjects type: ${subjects_type}"
+   }
 
    log.info "---------------------"
    log.info "Workflow parameters: "
@@ -28,6 +31,14 @@ workflow {
    log.info "dcc_obs_subjects_path: ${dcc_obs_subjects_path}"
    log.info "dcc_rct_subjects_path: ${dcc_rct_subjects_path}"
    log.info "node_output_path     : ${node_output_path}"
+
+   GET_MAPPER_DCC_VERSION()
+   mapper_dcc_version = GET_MAPPER_DCC_VERSION.out.mapper_dcc_version
+
+   mapper_dcc_version.view { path ->
+      if (path.text != params.release)
+         error "Mapper DCC version (${mapper_dcc_version}) does not match NextFlow DCC version (${params.release})"
+   }
 
    CASE_NODE_MAPPER(node_templates_path, dcc_subjects_path, node_output_path, subjects_type)
    
