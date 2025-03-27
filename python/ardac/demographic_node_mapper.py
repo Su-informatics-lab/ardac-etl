@@ -241,13 +241,13 @@ def main(command_arguments: argparse.Namespace, logger: logging.Logger) -> int:
 
    if command_arguments.subjectsType == 'observational':
       logger.info('Transforming observational subject data')
-      node_file_path = Path(node_output_path, _constants.audit_obs_file_name)
+      node_file_path = Path(node_output_path, _constants.demographic_obs_file_name)
       df_obs_output = generate_observational_demographic_node(dcc_subjects_path, case_file_path, template_headers)
       df_obs_output.to_csv(node_file_path.as_posix(), sep='\t', index=False, header=True)
       logger.info(f'Observational demographic node saved as: {node_file_path.as_posix()}')
    elif command_arguments.subjectsType == 'clinical':
       logger.info('Transforming clinical audit data')
-      node_file_path = Path(node_output_path, _constants.audit_rct_file_name)
+      node_file_path = Path(node_output_path, _constants.demographic_rct_file_name)
       df_rct_output = generate_clinical_demographic_node(dcc_subjects_path, case_file_path, template_headers)
       df_rct_output.to_csv(node_file_path.as_posix(), sep='\t', index=False, headers=True)
       logger.info(f'Clinical demographic node saved as: {node_file_path.as_posix()}')
@@ -273,7 +273,7 @@ if __name__ == '__main__':
    parser.add_argument('--subjects_type', dest='subjectsType', required=True, choices=['observational', 'clinical'], help='Value indicating if the input subject data is from clinical trial subjects or observational study subjects')
    parser.add_argument('--dcc_subjects_file', dest='dccSubjectsFile', required=True, help='Full path to the DCC input subjects file in CSV format')
    parser.add_argument('--node_output_path', dest='nodeOutputPath', required=True, help=f'''Path to the directory where the TSV audit node file is to be saved
-                       -- the file name will be either {_constants.case_obs_file_name} or {_constants.case_rct_file_name}.
+                       -- the file name will be either {_constants.audit_obs_file_name} or {_constants.demographic_rct_file_name}.
                        This argument is also the expected location of the input ARDaC case node TSV file.''')
 
    parsed_args = parser.parse_args()

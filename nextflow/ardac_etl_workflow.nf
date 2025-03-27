@@ -2,6 +2,7 @@
 
 include { CASE_NODE_MAPPER } from './modules/mappers.nf'
 include { GET_MAPPER_DCC_VERSION } from './modules/mappers.nf'
+include { DEMOGRAPHIC_NODE_MAPER } from './modules/mappers.nf'
 
 workflow {
 
@@ -37,9 +38,12 @@ workflow {
 
    mapper_dcc_version.view { path ->
       if (path.text != params.release)
-         error "Mapper DCC version (${mapper_dcc_version}) does not match NextFlow DCC version (${params.release})"
+         error "Mapper DCC version (${path.text}) does not match NextFlow DCC version (${params.release})"
    }
 
    CASE_NODE_MAPPER(node_templates_path, dcc_subjects_path, node_output_path, subjects_type)
+
+   DEMOGRAPHIC_NODE_MAPER(node_templates_path, dcc_subjects_path, node_output_path, subjects_type, CASE_NODE_MAPPER.demographic_node_file)
+   
    
 }
