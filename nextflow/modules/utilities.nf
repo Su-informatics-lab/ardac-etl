@@ -23,3 +23,26 @@ def mapSubjectsTypeToDemographicNodeFile(subjects_type) {
 
    error "Unsupported subjects_type value: " + subjects_type
 }
+
+// This function maps the subjects type to the
+// ARDaC observational or clinical follow-up node file name
+def mapSubjectsTypeToFollowupNodeFile(subjects_type) {
+   if (subjects_type == "observational") {
+      return "follow-up_obs_" + params.dcc_release + ".tsv"
+   } else if (subjects_type == "clinical") {
+      return "follow-up_rct_" + params.dcc_release + ".tsv"
+   }
+
+   error "Unsupported subjects_type value: " + subjects_type
+}
+
+// This function maps the subjects type to the
+// ARDaC observational or clinical follow-up quality
+// control file name
+def mapSubjectsTypeToFollowupQCFile(subjects_type) {
+   if (subjects_type == "observational") {
+      return "follow-up_qc_obs_" + params.dcc_release + ".tsv"
+   } else if (subjects_type == "clinical") {
+      return "follow-up_qc_rct_" + params.dcc_release + ".tsv"
+   }
+}
