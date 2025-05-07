@@ -21,7 +21,7 @@ audit_template_file_name = 'submission_audit_template' + __node_template_file_ex
 audit_obs_file_name = 'audit_obs_' + dcc_release_string + __node_file_extension__
 audit_rct_file_name = 'audit_rct_' + dcc_release_string + __node_file_extension__
 audit_obs_unmatched_file_name = 'audit_qc_obs_' + dcc_release_string + __node_file_extension__
-audit_rct_unmatched_file_name = 'audit_qct_rct_' + dcc_release_string + __node_file_extension__
+audit_rct_unmatched_file_name = 'audit_qc_rct_' + dcc_release_string + __node_file_extension__
 # Set the demographic output file names
 demographic_template_file_name = 'submission_demographic_template' + __node_template_file_extension__
 demographic_obs_file_name = 'demographic_obs_' + dcc_release_string + __node_file_extension__

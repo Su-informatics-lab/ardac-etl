@@ -45,4 +45,31 @@ def mapSubjectsTypeToFollowupQCFile(subjects_type) {
    } else if (subjects_type == "clinical") {
       return "follow-up_qc_rct_" + params.dcc_release + ".tsv"
    }
+
+   error "Unsupported subjects_type value: " + subjects_type
+}
+
+// This function maps the subjects type to the
+// ARDaC observational or clinical audit node file name
+def mapSubjectsTypeToAuditNodeFile(subjects_type) {
+   if (subjects_type == "observational") {
+      return "audit_obs_" + params.dcc_release + ".tsv"
+   } else if (subjects_type == "clinical") {
+      return "audit_rct_" + params.dcc_release + ".tsv"
+   }
+
+   error "Unsupported subjects_type value: " + subjects_type
+}
+
+// This function maps the subjects type to the
+// ARDaC observational or clinical audit quality
+// control file name
+def mapSubjectsTypeToAuditQCFile(subjects_type) {
+   if (subjects_type == "observational") {
+      return "audit_qc_obs_" + params.dcc_release + ".tsv"
+   } else if (subjects_type == "clinical") {
+      return "audit_qc_rct_" + params.dcc_release + ".tsv"
+   }
+
+   error "Unsupported subjects_type value: " + subjects_type
 }
