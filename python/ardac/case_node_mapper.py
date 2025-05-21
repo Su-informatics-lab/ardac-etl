@@ -147,12 +147,15 @@ def main(command_arguments: argparse.Namespace, logger: logging.Logger) -> int:
       logger.info('Transforming DCC clinical subject data to ARDaC case node')
       node_file_path = Path(node_output_path, _constants.case_rct_file_name)
       df_rct_output = generate_clinical_case_node(dcc_subjects_path, template_headers)
-      df_rct_output.to_csv(node_file_path.as_posix(), sep='\t', index=False, headers=True)
+      df_rct_output.to_csv(node_file_path.as_posix(), sep='\t', index=False, header=True)
    else:
       raise ValueError(f'Processing for subjects_type={command_arguments.subjectsType} is not implemented')
+   
+   return 0
 
    
 if __name__ == '__main__':
+   status = 0
    parser = argparse.ArgumentParser(
       description='''This utility generates ARDaC case nodes from observational or clinical trial DCC subject data provided in CSV format files.
          The user must provide the location of the ARDaC case node template file, the CSV file containing the DCC subject data, and the
