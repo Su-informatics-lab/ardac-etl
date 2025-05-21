@@ -2,6 +2,7 @@
 
 this_script_name=`basename $0`
 MAPPERS_HOME="$(cd "`dirname "$0"`"/..; pwd)"
+echo "INFO($this_script_name): MAPPERS_HOME=${MAPPERS_HOME}"
 
 source ${MAPPERS_HOME}/test/test_config.bash
 
