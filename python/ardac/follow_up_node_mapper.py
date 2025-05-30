@@ -551,8 +551,8 @@ if __name__ == '__main__':
       description='''This utility generates ARDaC follow-up nodes from ARDaC case nodes and observational or clinical trial DCC liver scores, medical information, vitals, and SOC data provided in CSV format files.
          The user must provide the location of the ARDaC follow-up node template file, the CSV files containing the DCC datasets, and the
          path to where the ARDaC follow-up node and quality control files are to be written.''',
-      epilog=f'''Observational follow-up node files are named \'{_constants.follow_up_obs_file_name}\', and observational QC files are named \`{_constants.follow_up_qc_obs_file_name}.
-         Clinical follow-up node files are named \'{_constants.follow_up_rct_file_name}\', and clinical QC files are named \'{_constants.follow_up_qc_rct_file_name}.  Node files are written to the directory given by the --node_output_path argument.
+      epilog=f'''Observational follow-up node files are named \'{_constants.follow_up_obs_file_name}\', and observational QC files are named \'{_constants.follow_up_qc_obs_file_name}\'.
+         Clinical follow-up node files are named \'{_constants.follow_up_rct_file_name}\', and clinical QC files are named \'{_constants.follow_up_qc_rct_file_name}\'.  Node files are written to the directory given by the --node_output_path argument.
          The ARDaC case node input TSV file also expected to be at this location.''')
    valid_log_level_names_mapping = logging.getLevelNamesMapping()
    valid_log_level_names_mapping.pop('NOTSET') # Remove NOTSET option value
