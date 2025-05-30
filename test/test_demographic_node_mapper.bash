@@ -9,7 +9,7 @@ source ${MAPPERS_HOME}/test/test_config.bash
 DCC_OBS_SUBJECTS_FILE=${DCC_OBS_PATH}/OBS_SUBJECTS.csv
 DCC_RCT_SUBJECTS_FILE=${DCC_RCT_PATH}/RCT_SUBJECTS.csv
 
-mapper_script=${MAPPERS_HOME}/python/ardac/case_node_mapper.py
+mapper_script=${MAPPERS_HOME}/python/ardac/demographic_node_mapper.py
 echo "INFO($this_script_name): mapper_script=${mapper_script}"
 
 version=$(python ${mapper_script} --version)
