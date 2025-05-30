@@ -249,12 +249,13 @@ def main(command_arguments: argparse.Namespace, logger: logging.Logger) -> int:
       logger.info('Transforming clinical audit data')
       node_file_path = Path(node_output_path, _constants.demographic_rct_file_name)
       df_rct_output = generate_clinical_demographic_node(dcc_subjects_path, case_file_path, template_headers)
-      df_rct_output.to_csv(node_file_path.as_posix(), sep='\t', index=False, headers=True)
+      df_rct_output.to_csv(node_file_path.as_posix(), sep='\t', index=False, header=True)
       logger.info(f'Clinical demographic node saved as: {node_file_path.as_posix()}')
    else:
       raise ValueError(f'Processing for subjects_type={command_arguments.subjectsType} is not implemented')
 
 if __name__ == '__main__':
+   status = 0
    parser = argparse.ArgumentParser(
       description='''This utility generates ARDaC demographic nodes from observational or clinical trial DCC subject files and ARDaC case node files.
          The DCC subject files are provided in CSV format, and the ARDaC case node files are provided in ARDaC node TSV format.
@@ -277,7 +278,6 @@ if __name__ == '__main__':
                        This argument is also the expected location of the input ARDaC case node TSV file.''')
 
    parsed_args = parser.parse_args()
-   print(parsed_args)
    
    # Configure and create logger for standard error
    console_handler = logging.StreamHandler(sys.stderr)
