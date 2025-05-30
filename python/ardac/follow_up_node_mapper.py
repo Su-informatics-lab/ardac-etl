@@ -537,15 +537,16 @@ def main(command_arguments: argparse.Namespace, logger: logging.Logger) -> int:
       node_file_qc_path = Path(node_output_path, _constants.follow_up_qc_rct_file_name)
       df_rct_output, df_qc_rct = generate_clinical_follow_up_node(dcc_liver_scores_path, dcc_med_info_path,
                                                                   dcc_vitals_path, dcc_soc_path, case_file_path, template_headers)
-      df_rct_output.to_csv(node_file_path.as_posix(), sep='\t', index=False, headers=True)
+      df_rct_output.to_csv(node_file_path.as_posix(), sep='\t', index=False, header=True)
       logger.info(f'Clinical follow-up node saved as: {node_file_path.as_posix()}')
-      df_qc_rct.to_csv(node_file_qc_path.as_posix(), sep='\t', index=False, headers=True)
+      df_qc_rct.to_csv(node_file_qc_path.as_posix(), sep='\t', index=False, header=True)
       logger.info(f'Clinical QC file saved as: {node_file_qc_path.as_posix()}')
    else:
       raise ValueError(f'Processing for subjects_type={command_arguments.subjectsType} is not implemented')
 
 
 if __name__ == '__main__':
+   status = 0
    parser = argparse.ArgumentParser(
       description='''This utility generates ARDaC follow-up nodes from ARDaC case nodes and observational or clinical trial DCC liver scores, medical information, vitals, and SOC data provided in CSV format files.
          The user must provide the location of the ARDaC follow-up node template file, the CSV files containing the DCC datasets, and the
