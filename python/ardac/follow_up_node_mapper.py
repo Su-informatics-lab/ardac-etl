@@ -569,10 +569,9 @@ if __name__ == '__main__':
    parser.add_argument('--node_output_path', dest='nodeOutputPath', required=True, help=f'Path to the directory where the TSV case node file is to be saved.  The file name will be either {_constants.case_obs_file_name} or {_constants.case_rct_file_name}')
 
    parsed_args = parser.parse_args()
-   print(parsed_args)
    
-   # Configure and create logger for standard error
-   console_handler = logging.StreamHandler(sys.stderr)
+   # Configure and create logger for standard output
+   console_handler = logging.StreamHandler(sys.stdout)
    console_handler.setLevel(parsed_args.logLevel)
    console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 

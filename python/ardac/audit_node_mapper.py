@@ -268,10 +268,9 @@ if __name__ == '__main__':
                        This argument is also the expected location of the input ARDaC case node TSV file.''')
 
    parsed_args = parser.parse_args()
-   print(parsed_args)
    
-   # Configure and create logger for standard error
-   console_handler = logging.StreamHandler(sys.stderr)
+   # Configure and create logger for standard output
+   console_handler = logging.StreamHandler(sys.stdout)
    console_handler.setLevel(parsed_args.logLevel)
    console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 
