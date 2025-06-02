@@ -238,14 +238,18 @@ def main(command_arguments: argparse.Namespace, logger: logging.Logger) -> int:
       node_file_path = Path(node_output_path, _constants.audit_rct_file_name)
       node_file_unmatched_path = Path(node_output_path, _constants.audit_rct_unmatched_file_name)
       df_rct_output, df_unmatched_rct = generate_clinical_audit_node(dcc_audit_path, case_file_path, template_headers)
-      df_rct_output.to_csv(node_file_path.as_posix(), sep='\t', index=False, headers=True)
+      df_rct_output.to_csv(node_file_path.as_posix(), sep='\t', index=False, header=True)
       logger.info(f'Clinical audit node saved as: {node_file_path.as_posix()}')
       df_unmatched_rct.to_csv(node_file_unmatched_path.as_posix(), sep='\t', index=False)
       logger.info(f'Clinical QC file saved as: {node_file_unmatched_path.as_posix()}')
    else:
       raise ValueError(f'Processing for subjects_type={command_arguments.subjectsType} is not implemented')
+   
+   return 0
+
 
 if __name__ == '__main__':
+   status = 0
    parser = argparse.ArgumentParser(
       description='''This utility generates ARDaC audit nodes from observational or clinical trial DCC audit files and ARDaC case node files.
          The DCC audit files are provided in CSV format, and the ARDaC case node files are provided in ARDaC node TSV format.
