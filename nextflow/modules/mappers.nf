@@ -40,7 +40,7 @@ process CASE_NODE_MAPPER {
         val subjects_type
 
     output:
-        path("${node_output_path}/" + mapSubjectsTypeToCaseNodeFile(subjects_type)), emit: case_node_file
+        path("${node_output_path}/case_${subjects_type}_${params.dcc_release}.tsv"), emit: case_node_file
         
     script:
     """
