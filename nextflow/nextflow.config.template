@@ -1,11 +1,11 @@
-/*
- * Pipeline parameters
- */
+//
+// Pipeline parameters
+//
 
 params {
    // Version information
    dcc_release = "DCC_data_release_v2.0.0"
-   
+
    // DEBUG, INFO, WARN, ERROR are possible NextFlow log levels set by the
    // NextFlow command line option `-log-file`.  Use log.debug, log.info,
    // log.warn, and log.error commands in workflow functions.
@@ -15,15 +15,21 @@ params {
 
    // Input directory
    input_directory = "input"
-   
+
    // Output directory
    output_directory = "output"
 
    // ARDaC node templates directory
    node_templates_directory = "node_templates"
 
-   // Submission case template
-   case_template_tsv_file = "submission_case_template.tsv"
+   // Observational data input subdirectory
+   obs_input_directory = "obs_data"
+
+   // Clinical data input subdirectory
+   rct_input_directory = "rct_data"
+   
+   // Output directory
+   output_directory = "/path/to/nextflow_output"
 
    // Output subdirectory for generated ARDaC node files
    ardac_nodes_directory = "ardac_nodes"
@@ -56,7 +62,7 @@ params {
 profiles {
    conda {
       conda.enabled = true
-      process.conda = "./venv"
+      process.conda = "/path/to/venv"
    }
 
    workstation {
