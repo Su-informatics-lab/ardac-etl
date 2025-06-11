@@ -2,6 +2,12 @@
 // Pipeline parameters
 //
 
+workflow {
+   // The directory where temporary workflow files are stored
+   // for each workflow execution
+   workDir = /path/to/workflow/directory
+}
+
 params {
    // Version information
    dcc_release = "DCC_data_release_v2.0.0"
