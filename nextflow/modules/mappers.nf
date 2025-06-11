@@ -115,7 +115,7 @@ process CASE_NODE_MAPPER {
 
    script:
    """
-   follow_up_node_mapper.py \
+   python follow_up_node_mapper.py \
        --log_level ${params.python_log_level} \
        --node_templates_path ${node_templates_path} \
        --subjects_type ${subjects_type} \
@@ -151,7 +151,7 @@ process CASE_NODE_MAPPER {
 
    script:
    """
-   audit_node_mapper.py \
+   python audit_node_mapper.py \
        --log_level ${params.python_log_level} \
        --node_templates_path ${node_templates_path} \
        --subjects_type ${subjects_type} \
