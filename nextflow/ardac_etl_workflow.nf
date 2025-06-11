@@ -77,11 +77,11 @@ workflow {
          error "Mapper DCC version (${path.text}) does not match NextFlow DCC version (${params.release})"
    }
 
-   CASE_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type)
+   //CASE_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type)
 
-   DEMOGRAPHIC_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type, CASE_NODE_MAPPER.case_node_file)
+   //DEMOGRAPHIC_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type, CASE_NODE_MAPPER.case_node_file)
    
-   FOLLOWUP_NODE_MAPPER(node_templates_path, dcc_subjects_file, dcc_liver_scores_file, dcc_med_info_file, dcc_vitals_file, dcc_soc_file, node_output_path, subjects_type, CASE_NODE_MAPPER.case_node_file)
+   //FOLLOWUP_NODE_MAPPER(node_templates_path, dcc_subjects_file, dcc_liver_scores_file, dcc_med_info_file, dcc_vitals_file, dcc_soc_file, node_output_path, subjects_type, CASE_NODE_MAPPER.case_node_file)
 
-   AUDIT_NODE_MAPPER(node_templates_path, dcc_audit_file, node_output_path, subjects_type, CASE_NODE_MAPPER.case_node_file)
+   //AUDIT_NODE_MAPPER(node_templates_path, dcc_audit_file, node_output_path, subjects_type, CASE_NODE_MAPPER.case_node_file)
 }
