@@ -11,10 +11,10 @@ workflow {
    // params.subjects_type should be provided on the command line
    subjects_type = params.subjects_type
    input_dir = file(params.input_directory)
-   output_dir = file(params.output_directory)
    node_templates_path = input_dir.resolve(params.node_templates_directory)
    obs_input_dir = input_dir.resolve(params.obs_input_directory)
    rct_input_dir = input_dir.resolve(params.rct_input_directory)
+   output_dir = file(params.output_directory)
    node_output_path = output_dir.resolve(params.ardac_nodes_directory)
    dcc_obs_subjects_file = obs_input_dir.resolve(params.observational_subjects_csv_file)
    dcc_rct_subjects_file = rct_input_dir.resolve(params.clinical_subjects_csv_file)

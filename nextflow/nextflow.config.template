@@ -13,11 +13,8 @@ params {
    // Log level for all python scripts: DEBUG, INFO, WARNING, ERROR, CRITICAL
    python_log_level = "DEBUG"
 
-   // Input directory
-   input_directory = "input"
-
-   // Output directory
-   output_directory = "output"
+   // Input base directory
+   input_directory = "/path/to/input_directory"
 
    // ARDaC node templates directory
    node_templates_directory = "node_templates"
@@ -28,7 +25,7 @@ params {
    // Clinical data input subdirectory
    rct_input_directory = "rct_data"
    
-   // Output directory
+   // Output base directory
    output_directory = "/path/to/nextflow_output"
 
    // Output subdirectory for generated ARDaC node files
