@@ -17,7 +17,7 @@ process GET_MAPPER_DCC_VERSION {
 
    script:
    """
-   echo "PYTHONPATH: $PYTHONPATH"
+   echo "PYTHONPATH: \$PYTHONPATH"
    python ${params.ardac_mapper_scripts}/case_node_mapper.py --dcc_version > mapper_dcc_version.txt 
    """
 }
