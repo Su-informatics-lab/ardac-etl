@@ -26,9 +26,6 @@ process GET_MAPPER_DCC_VERSION {
  * provided in CSV format files.
  */
 process CASE_NODE_MAPPER {
-
-    //publishDir params.output, mode: 'symlink'
-
     input:
         // Path to directory containing node template files
         path node_templates_path
