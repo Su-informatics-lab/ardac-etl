@@ -20,7 +20,7 @@ params {
    ardac_mapper_scripts = "${params.ardac_etl_path}/python/ardac"
 
    // Full path to input base directory
-   input_directory = "/path/to/input/directory"
+   input_directory = "/path/to/dcc_v2.0.0_data"
 
    // ARDaC node templates directory
    node_templates_directory = "node_templates"
@@ -68,7 +68,6 @@ profiles {
    conda {
       conda.enabled = true
       process.conda = "${params.ardac_etl_path}/venv"
-      process.beforeScript = 'export PYTHONPATH=/path/to/ardac-etl/python/ardac:$PYTHONPATH'
    }
 
    workstation {
@@ -86,6 +85,7 @@ profiles {
 }
 
 process {
+   beforeScript = "export PYTHONPATH=${params.ardac_mapper_scripts}"
    // defaults for all processes
    cpus = 1
    memory = 2.GB
