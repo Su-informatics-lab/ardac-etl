@@ -74,7 +74,7 @@ workflow {
 
    mapper_dcc_version.view { path ->
       if (path.text != params.release)
-         error "Mapper DCC version (${path.text}) does not match NextFlow DCC version (${params.release})"
+         error "Mapper DCC version (${path.text}) does not match NextFlow DCC version (${params.dcc_release})"
    }
 
    //CASE_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type)
