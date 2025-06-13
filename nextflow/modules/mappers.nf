@@ -13,11 +13,12 @@ include { mapSubjectsTypeToAuditQCFile } from './utilities.nf'
  */
 process GET_MAPPER_DCC_VERSION {
    output:
-      path 'maper_dcc_version.txt', emit: mapper_dcc_version
+      path 'mapper_dcc_version.txt', emit: mapper_dcc_version
 
    script:
    """
-   python case_node_maper.py --dcc_version > mapper_dcc_version.txt 
+   echo "PYTHONPATH: $PYTHONPATH"
+   python ${params.ardac_mapper_scripts}/case_node_mapper.py --dcc_version > mapper_dcc_version.txt 
    """
 }
 
