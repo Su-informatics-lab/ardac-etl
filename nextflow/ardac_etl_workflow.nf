@@ -77,7 +77,7 @@ workflow {
          error "Mapper DCC version (${path.text}) does not match NextFlow DCC version (${params.dcc_release})"
    }
 
-   //CASE_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type)
+   CASE_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type)
 
    //DEMOGRAPHIC_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type, CASE_NODE_MAPPER.case_node_file)
    

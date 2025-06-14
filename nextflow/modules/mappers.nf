@@ -42,7 +42,10 @@ process CASE_NODE_MAPPER {
         
     script:
     """
-    python case_node_maper.py \
+    echo "node_templates_path: ${node_templates_path}"
+    echo "dcc_subjects_file  : ${dcc_subjects_file}"
+    echo "node_output_path   : ${node_output_path}"
+    python ${params.ardac_mapper_scripts}/case_node_mapper.py \
        --log_level ${params.python_log_level} \
        --node_templates_path ${node_templates_path} \
        --subjects_type ${subjects_type} \
