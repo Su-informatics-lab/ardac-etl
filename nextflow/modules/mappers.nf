@@ -36,9 +36,11 @@ process CASE_NODE_MAPPER {
         path node_output_path
         // The subjects type
         val subjects_type
+        // The filename value
+        val subjects_val
 
     output:
-        path("${node_output_path}/case_${subjects_type}_${params.dcc_release}.tsv"), emit: case_node_file
+        path("${node_output_path}/case_${subjects_val}_${params.dcc_release}.tsv"), emit: case_node_file
         
     script:
     """

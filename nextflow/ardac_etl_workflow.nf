@@ -33,6 +33,7 @@ workflow {
    
 
    if (subjects_type == 'observational') {
+      subjects_val = 'obs'
       dcc_subjects_file = dcc_obs_subjects_file
       dcc_liver_scores_file = dcc_obs_liver_scores_file
       dcc_med_info_file = dcc_obs_med_info_file
@@ -40,6 +41,7 @@ workflow {
       dcc_soc_file = dcc_obs_soc_file
       dcc_audit_file = dcc_obs_audit_file
    } else if (subjects_type == 'clinical') {
+      subjects_val = 'rct'
       dcc_subjects_file = dcc_rct_subjects_file
       dcc_liver_scores_file = dcc_rct_liver_scores_file
       dcc_med_info_file = dcc_rct_med_info_file
@@ -77,7 +79,7 @@ workflow {
          error "Mapper DCC version (${path.text}) does not match NextFlow DCC version (${params.dcc_release})"
    }
 
-   CASE_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type)
+   CASE_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type, subjects_val)
 
    //DEMOGRAPHIC_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type, CASE_NODE_MAPPER.case_node_file)
    
