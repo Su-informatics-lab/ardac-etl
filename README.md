@@ -37,4 +37,9 @@ Python: Conda Path = /path/to/your/conda/bin/conda
 
 You may also need to set `Python: Locator = js` if the IDE cycles indefinitely on `Reactivating Terminals`.
 
+## Installing NextFlow
+Follow the instructions [here](https://www.nextflow.io/docs/latest/install.html) to install NextFlow
+
+## Executing the ARDaC mapper workflow
+The NextFlow workflow to generate the ARDaC nodes from the observational and clinical data sets is performed by the `run_observational_workflow.bash` and `run_clinical_workflow.bash` scripts in the `nextflow` subdirectory.  These scripts can be run directly in that same subdirectory.  A hidden log file `.nextflow.log` will be generated describing the run and any problems that may have occurred.
 
