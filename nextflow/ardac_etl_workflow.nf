@@ -31,6 +31,8 @@ workflow {
    dcc_obs_audit_file = obs_input_dir.resolve(params.observational_audit_csv_file)
    dcc_rct_audit_file = rct_input_dir.resolve(params.clinical_audit_csv_file)
    
+   // Make the needed output directories
+   node_output_path.mkdirs()
 
    if (subjects_type == 'observational') {
       subjects_val = 'obs'
@@ -83,7 +85,7 @@ workflow {
 
    DEMOGRAPHIC_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type, subjects_val, CASE_NODE_MAPPER.out.case_node_file)
    
-   //FOLLOWUP_NODE_MAPPER(node_templates_path, dcc_subjects_file, dcc_liver_scores_file, dcc_med_info_file, dcc_vitals_file, dcc_soc_file, node_output_path, subjects_type, CASE_NODE_MAPPER.case_node_file)
+   FOLLOWUP_NODE_MAPPER(node_templates_path, dcc_subjects_file, dcc_liver_scores_file, dcc_med_info_file, dcc_vitals_file, dcc_soc_file, node_output_path, subjects_type, subjects_val, CASE_NODE_MAPPER.out.case_node_file)
 
    //AUDIT_NODE_MAPPER(node_templates_path, dcc_audit_file, node_output_path, subjects_type, CASE_NODE_MAPPER.case_node_file)
 }
