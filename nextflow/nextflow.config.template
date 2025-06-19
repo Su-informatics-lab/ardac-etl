@@ -3,26 +3,29 @@
 //
 
 params {
-   // DEBUG, INFO, WARN, ERROR are possible NextFlow log levels set by the
-   // NextFlow command line option `-log-file`.  Use log.debug, log.info,
+   // TRACE, DEBUG, INFO, WARN, ERROR are possible NextFlow log levels set by the
+   // NextFlow command line option `-log-level`.  Use log.trace, log.debug, log.info,
    // log.warn, and log.error commands in workflow functions.
 
    // Log level for all python scripts: DEBUG, INFO, WARNING, ERROR, CRITICAL
    python_log_level = "DEBUG"
 
-   // Expected version of data mapping tools to use
+   // Expected version of data mapping tools to use.  This value should match the
+   // value returned by the python mapper scripts called with the --dcc_version argument.
    dcc_release = "DCC_data_release_v2.0.0"
 
-   // Path to the top level of the ARDaC ETL project
+   // Full path to the top level of the ARDaC ETL project.  This configuration file
+   // is in the nextflow subdirectory.  The ardac-etl directory should be one input_directory
+   // above that.
    ardac_etl_path = "/path/to/ardac-etl"
 
-   // Path to the Python scripts
+   // Full path to the Python scripts
    ardac_mapper_scripts = "${params.ardac_etl_path}/python/ardac"
 
    // Full path to input base directory
    input_directory = "/path/to/dcc_v2.0.0_data"
 
-   // ARDaC node templates directory
+   // ARDaC node templates subdirectory of the input directory
    node_templates_directory = "node_templates"
 
    // Observational data input subdirectory
@@ -62,18 +65,29 @@ params {
    clinical_audit_csv_file = "RCT_AUDIT.csv"
 }
 
+// The location of nextflow process log files and itermediate output
 workDir = "${params.output_directory}/nextflow_work"
 
+// Workflow profiles
 profiles {
+   // This profile is used for Anaconda virtual environments.
+   // Python processes are intended to be executed within Anaconda
+   // environments using this profile.
    conda {
+      // Enable the use of Anaconda virtual environment
       conda.enabled = true
+      // Specify which virtual environment to use
       process.conda = "${params.ardac_etl_path}/venv"
    }
 
+   // Profile for executing on a workstation or a single compute server
    workstation {
       process.executor = 'local'
    }
 
+   // Untested profile for executing workflow processes concurrently
+   // on a high-performance computing (HPC) cluster.  This one is
+   // configured for use with a SLURM scheduler.
    hpc_cluster {
       process.executor = 'slurm'
       process.resourceLimits = [
@@ -84,7 +98,9 @@ profiles {
    }
 }
 
+// Basic configuration for each workflow process.
 process {
+   // Set the PYTHONPATH environment variable in each process
    beforeScript = "export PYTHONPATH=${params.ardac_mapper_scripts}"
    // defaults for all processes
    cpus = 1
