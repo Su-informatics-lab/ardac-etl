@@ -1,13 +1,5 @@
 #!/usr/bin/env nextflow
 
-include { mapSubjectsTypeToCaseNodeFile } from './utilities.nf'
-include { mapSubjectsTypeToDemographicNodeFile } from './utilities.nf'
-include { mapSubjectsTypeToFollowupNodeFile } from './utilities.nf'
-include { mapSubjectsTypeToFollowupQCFile } from './utilities.nf'
-include { mapSubjectsTypeToAuditNodeFile } from './utilities.nf'
-include { mapSubjectsTypeToAuditQCFile } from './utilities.nf'
-
-
 /*
  * Get the DCC version that the mapping utilities support
  */
