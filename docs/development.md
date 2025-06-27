@@ -114,6 +114,6 @@ git commit -m "Describe any problems caused by the merge and how they were fixed
 git push origin release/2.1.0
 ```
 
-When testing is complete, merge your changes into the `main` branch. Because the main branch is protected, you will need to create a pull request and have it reviewed by a team member. This process is most easily accomplished using the GitHub web interface or the GitHub desktop application. When creating a tag name for merged changes into `main`, the format should be `DCC_VERSION=__dcc_data_release__,MAPPING_VERSION={__mapping_version__'.  After the PR is closed and the changes are merged, you can (and should) remove the release branch. The Github web UI should prompt for this when completing the merge.
+When testing is complete, merge your changes into the `main` branch. Because the main branch is protected, you will need to create a pull request and have it reviewed by a team member. This process is most easily accomplished using the GitHub web interface or the GitHub desktop application. When creating a tag name for merged changes into `main`, the format should be `DCC_VERSION=__dcc_data_release__,MAPPING_VERSION=__mapping_version__`.  After the PR is closed and the changes are merged, you can (and should) remove the release branch. The Github web UI should prompt for this when completing the merge.
 
 
