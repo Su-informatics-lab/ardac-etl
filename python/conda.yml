@@ -1,0 +1,14 @@
+name: ardac_etl
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.13.2  
+  - pip=25.0.1
+  - pip:
+    - numpy==2.2.2
+    - pandas==2.2.3
+    - python-dateutil==2.9.0.post0
+    - pytz==2025.1
+    - six==1.17.0
+    - tzdata==2025.1
