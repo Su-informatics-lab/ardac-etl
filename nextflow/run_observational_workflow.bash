@@ -1,3 +1,3 @@
 
-nextflow run ardac_etl_workflow.nf -config nextflow.config -profile conda,workstation -log-level DEBUG --subjects_type observational
+nextflow -C nextflow.config run ardac_etl_workflow.nf -profile conda,workstation --subjects_type observational
 
