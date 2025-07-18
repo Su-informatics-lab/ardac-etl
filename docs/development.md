@@ -45,7 +45,7 @@ git checkout feat/new-feature-name
 ## Step 4: Update the version identifiers
 Modify the version identifiers in the Python scripts in the feature branch on your local system.  Open the `_constants.py` file in the `python/ardac` directory.  Update the `__mapping_version__` global variable to indicate the feature update.  The format of the version identifier is _major\_release_._minor\_release_._bug\_fix_.  Feature updates should be indicated by incrementing the _minor\_release_ value. If the branch is the first change to a major release, then that value should be incremented instead.  Bug fixes should be indicagted by increasing the _bug\_fix_ value.  If the branch is also the first change towards a new DCC data model, then the `__dcc_data_release__` value should also be updated to reflect support of a new data model.  Whenever the `__dcc_data_release__` value is updated, the `__mapping_version__` value should be reset to `1.0.0` to indicate the first ETL implementation for the new data model.
 
-Next, modify the DCC data model version identifier in the NextFlow configuration, if neccessary.  Open the `nextflow.config.template` file and update the `dcc_release` value if the branch `__dcc_data_release__` value was updated for the Python scripts.
+Next, modify the DCC data model version identifier in the Nextflow configuration, if neccessary.  Open the `nextflow.config.template` file and update the `dcc_release` value if the branch `__dcc_data_release__` value was updated for the Python scripts.
 
 Once the version values have been changed, save the changes and commit the changes to the branch.
 
