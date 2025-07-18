@@ -54,11 +54,11 @@ The input directory, given by the parameter `params.input_directory` which must 
 The Nextflow workflow to generate the ARDaC nodes from the observational and clinical data sets is performed by the `run_observational_workflow.bash` and `run_clinical_workflow.bash` scripts in the `nextflow` subdirectory.  These scripts can be run directly in that same subdirectory.  A hidden log file `.nextflow.log` will be generated describing the run and any problems that may have occurred.
 
 ### Execution modes
-The workflow can be executed in HPC batch processing environments under the control of a job scheduler like SLURM.  Currently, the workflow can run only on a single node.  The jobs may be interactive jobs used for debugging and development, or they may be queued to run the workflow in production.  If you have access to an HPC resource that has access to the data sets that need translation, you can use that system for development and production execution of the workflow.
+The workflow can be executed in HPC batch processing environments under the control of a job scheduler like SLURM.  The workflow can run on a workstation or laptop, a single node in an HPC cluster, or on multiple nodes in an HPC cluster.  The jobs may be interactive jobs used for debugging and development, or they may be queued to run the workflow in production.  If you have access to an HPC resource, you can use that system for development and production execution of the workflow.
 
-The Git project should be cloned and the appropriate branch checked out for testing before execution.  The Nextflow configuration file will need to be updated so that the input data can be located on the system, and so that the ARDaC node files can be written to an appropriate destination.
+The Git project should be cloned and the appropriate branch checked out for testing before execution.  The Nextflow configuration file will need to be updated so that the input data can be located on the system, and so that the ARDaC node files can be written to an appropriate destination.  The following subsections show the steps for running in different modes on HPC systems governed by the SLURM scheduler.
 
-#### Interactive execution
+#### Interactive execution on HPC cluster
 To execute the workflow as an interactive job:
 
 1. Change to the `nextflow` directory
@@ -68,7 +68,7 @@ To execute the workflow as an interactive job:
    and where `xxxxxx` is an account the hour of run time will be charged to
 3. Execute one of the workflow scripts `run_clinical_workflow.bash` or `run_observational_workflow.bash`
 
-#### Batch job execution with a single node
+#### HPC batch job execution -- single-node deployment
 The workflow script should be executed through a SLURM batch submission script that can specify how the job is to be executed.  This script is the same as a shell script, but with directives for how SLURM should select resources to run the job.  Below is an example batch submission script:
 
 ```bash
@@ -78,7 +78,7 @@ The workflow script should be executed through a SLURM batch submission script t
 #SBATCH -o %x_%j.txt
 #SBATCH -e %x_%j.err
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=<email-address>
+#SBATCH --mail-user=<email_address>
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=3
@@ -99,11 +99,64 @@ sbatch <submission_script>
 
 It is important to note that the total cores allocated per node will be the number of SLURM tasks per node (given by `--ntasks-per-node`) multiplied by the number of cores made available to each SLURM task (given by `--cpus-per-task`).  For single node execution of the workflow, it makes sense to run only a single Nextflow instance on the node and provide as many cores as the workflow can utilize.  Currently, each Python process utilizes only a singe core.  Given the current structure of the workflow, only three of the Python processes can run concurrently, so it makes sense to provide no more than three cores for the single Nextflow instance.
 
+#### HPC batch job execution -- multinode deployment
+The multinode workflow deployment is launched similarly to the single-node deployment; however, There are some important differences in how the workflow executes in this mode.  The batch script will start a Nextflow instance on a single node which launches additional single-node jobs which execute each workflow task.  The multinode workflow can be deployed with the following submission script:
 
-#### Batch job execution multinode deployment
+```bash
+#!/bin/bash
+#SBATCH -J <job_name>
+#SBATCH -p <queue_name>
+#SBATCH -o %x_%j.txt
+#SBATCH -e %x_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=<email_address>
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --time=00:15:00
+#SBATCH --mem=8G
+#SBATCH -A <project_account>
+
+nextflow -C nextflow.config run ardac_etl_workflow.nf -profile conda,hpc_cluster -with-trace -with-timeline ardac_etl_timeline.html --subjects_type clinical
+```
+
+To submit the job, execute the command:
+```bash
+sbatch <submission_script>
+```
+
+Note that only one core is needed for the Nextflow instance to manage the launching of the batch jobs which will execute the workflow tasks.
+
+### Performance profiling
+Performance profiling is provided in the form of traces and timelines.  Traces provide process level resource utilization and runtime performance in CSV format.  Timelines are HTML graphical representations of when processes are executed.
+
+#### Workflow performance trace
+The following is a description of the trace option from the Nextflow documentation:
+
+> Nextflow creates an execution tracing file that contains some useful information about each process executed in your pipeline script, including: submission time, start time, completion time, cpu and memory used.
+>
+> In order to create the execution trace file add the -with-trace command line option when launching the pipeline execution. For example:
+```bash
+nextflow run <pipeline> -with-trace
+```
+
+The options is enabled by the ARDaC shell scripts for running the workflows.  A trace file created will be of the form `trace-*-*.txt`
+
+#### Workflow timeline
+An execution timeline can be produced showing when a process executes and for how long.  The ARDaC shell scripts for running the workflow are configured to produce a timeline file named `ardac_etl_timeline.html`.  The following is taken from the Nextflow documentation and describes the timeline chart:
+
+> Each bar represents a process run in the pipeline execution. The bar length represents the task duration time (wall-time). The colored area in each bar represents the real execution time. The grey area to the left of the colored area represents the task scheduling wait time. The grey area to the right of the colored area represents the task termination time (clean-up and file un-staging). The numbers on the x-axis represent the time in absolute units e.g. minutes, hours, etc.
+>
+> Each bar displays two numbers: the task duration time and the virtual memory size peak.
+>
+> As each process can spawn many tasks, colors are used to identify those tasks belonging to the same process.
+> To enable the creation of the execution timeline add the -with-timeline command line option when launching the pipeline execution. For example:
+```bash
+nextflow run <pipeline> -with-timeline [file name]
+```
 
 ## Workflow versioning
-The python scripts perform the mapping from the observational and clinical Data Coordinating Center (DCC) format to the ARDaC CDM node format.  The DCC format currently supported by the mappers is set in the `_constants.py` file in the `python/ardac` script directory under the parameter `__dcc_data_release__`.  The parameter `__mapping_version__` sets the version of the mapping software which implements the mapping for the current DCC release.  If the mapping for a particular DCC data release is to be updated, then the mapping version should be increased.  If support for a new DCC data release is to be implemented, then the DCC release version should be increased and the mapping version reset to `1.0.0`.
+The Python scripts perform the mapping from the observational and clinical Data Coordinating Center (DCC) format to the ARDaC CDM node format.  The DCC format currently supported by the mappers is set in the `_constants.py` file in the `python/ardac` script directory under the parameter `__dcc_data_release__`.  The parameter `__mapping_version__` sets the version of the mapping software which implements the mapping for the current DCC release.  If the mapping for a particular DCC data release is to be updated, then the mapping version should be increased.  If support for a new DCC data release is to be implemented, then the DCC release version should be increased and the mapping version reset to `1.0.0`.
 
 The Nextflow workflow script is built for a particular DCC data release.  The DCC data release version expected by the Nextflow workflow is set in the `nextflow.config` file under the `params.dcc_release` configuration parameter.
 
