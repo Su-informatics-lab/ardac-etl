@@ -1,12 +1,19 @@
 //
+// Logging settings
+//
+log {
+   // TRACE, DEBUG, INFO, WARN, ERROR are possible NextFlow log levels.
+   // Use log.trace, log.debug, log.info, log.warn, and log.error commands in workflow
+   // functions.
+   level = 'DEBUG'
+}
+
+
+//
 // Pipeline parameters
 //
 
 params {
-   // TRACE, DEBUG, INFO, WARN, ERROR are possible Nextflow log levels set by the
-   // Nextflow command line option `-log-level`.  Use log.trace, log.debug, log.info,
-   // log.warn, and log.error commands in workflow functions.
-
    // Log level for all python scripts: DEBUG, INFO, WARNING, ERROR, CRITICAL
    python_log_level = "DEBUG"
 
@@ -23,7 +30,7 @@ params {
    ardac_mapper_scripts = "${params.ardac_etl_path}/python/ardac"
 
    // Full path to input base directory
-   input_directory = "/path/to/dcc_v2.0.0_data"
+   input_directory = "/path/to/input/dcc_v2.0.0_data"
 
    // ARDaC node templates subdirectory of the input directory
    node_templates_directory = "node_templates"
@@ -35,7 +42,7 @@ params {
    rct_input_directory = "rct_data"
    
    // Full path to output base directory
-   output_directory = "/path/to/nextflow_output"
+   output_directory = "/path/to/output/nextflow_output"
 
    // Output subdirectory for generated ARDaC node files
    ardac_nodes_directory = "ardac_nodes"
@@ -90,10 +97,15 @@ profiles {
    // configured for use with a SLURM scheduler.
    hpc_cluster {
       process.executor = 'slurm'
+      process.queue = 'general'
+      process.clusterOptions = ["-A xxxxxx"]
       process.resourceLimits = [
-         memory: 4.GB,
+         // The maximum amount of ram each process can use
+         memory: 2.GB,
+         // The number of cores per process
          cpus: 1,
-         time: 2.h,
+         // The maximum amount of time each process can run
+         time: 2.h
       ]
    }
 }
