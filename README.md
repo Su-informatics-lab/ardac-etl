@@ -17,7 +17,7 @@ To show your current search path:
 echo $PATH
 ```
 
-The path should contain the installtion location of Anaconda.  If not, you should seek help installing Anaconda
+The path should contain the installation location of Anaconda.  If not, you should seek help installing Anaconda
 from from your system administrator.
 
 The next task is to create the virtual environment using Anaconda.
