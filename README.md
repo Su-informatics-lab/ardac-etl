@@ -140,7 +140,7 @@ The following is a description of the trace option from the Nextflow documentati
 nextflow run <pipeline> -with-trace
 ```
 
-The options is enabled by the ARDaC shell scripts for running the workflows.  A trace file created will be of the form `trace-*-*.txt`
+The options are enabled by the ARDaC shell scripts for running the workflows.  A trace file created will be of the form `trace-*-*.txt`
 
 #### Workflow timeline
 An execution timeline can be produced showing when a process executes and for how long.  The ARDaC shell scripts for running the workflow are configured to produce a timeline file named `ardac_etl_timeline.html`.  The following is taken from the Nextflow documentation and describes the timeline chart:
