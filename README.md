@@ -56,7 +56,7 @@ The Nextflow workflow to generate the ARDaC nodes from the observational and cli
 ### Execution modes
 The workflow can be executed in HPC batch processing environments under the control of a job scheduler like SLURM.  The workflow can run on a workstation or laptop, a single node in an HPC cluster, or on multiple nodes in an HPC cluster.  The jobs may be interactive jobs used for debugging and development, or they may be queued to run the workflow in production.  If you have access to an HPC resource, you can use that system for development and production execution of the workflow.
 
-The Git project should be cloned and the appropriate branch checked out for testing before execution.  The Nextflow configuration file will need to be updated so that the input data can be located on the system, and so that the ARDaC node files can be written to an appropriate destination.  The following subsections show the steps for running in different modes on HPC systems governed by the SLURM scheduler.
+The Git project should be cloned and the appropriate branch checked out for testing before execution.  The Nextflow configuration file will need to be updated so that the input and output data locations can specified.  The following subsections show the steps for running in different modes on HPC systems governed by the SLURM scheduler.
 
 #### Interactive execution on HPC cluster
 To execute the workflow as an interactive job:
