@@ -406,7 +406,7 @@ if __name__ == "__main__":
     except Exception as e:
         logger.critical("Caught an exception", exc_info=True)
     finally:
-        if status not in locals():
+        if 'status' not in locals():
             status = 3
 
     exit(status)
