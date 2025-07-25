@@ -24,13 +24,13 @@ params {
    // Full path to the top level of the ARDaC ETL project.  This configuration file
    // is in the nextflow subdirectory.  The ardac-etl directory should be one input_directory
    // above that.
-   ardac_etl_path = "/path/to/ardac-etl"
+   ardac_etl_path = "/path/to/ardac/projects/ardac-etl"
 
    // Full path to the Python scripts
    ardac_mapper_scripts = "${params.ardac_etl_path}/python/ardac"
 
    // Full path to input base directory
-   input_directory = "/path/to/input/dcc_v2.0.0_data"
+   input_directory = "/path/to/ardac/development/dcc_v2.0.0_data"
 
    // ARDaC node templates subdirectory of the input directory
    node_templates_directory = "node_templates"
@@ -42,7 +42,7 @@ params {
    rct_input_directory = "rct_data"
    
    // Full path to output base directory
-   output_directory = "/path/to/output/nextflow_output"
+   output_directory = "/path/to/ardac/development/nextflow_output"
 
    // Output subdirectory for generated ARDaC node files
    ardac_nodes_directory = "ardac_nodes"
@@ -75,6 +75,11 @@ params {
 // The location of nextflow process log files and itermediate output
 workDir = "${params.output_directory}/nextflow_work"
 
+// Configure workflow timeline generation
+timeline {
+   overwrite = true
+}
+
 // Workflow profiles
 profiles {
    // This profile is used for Anaconda virtual environments.
@@ -98,7 +103,7 @@ profiles {
    hpc_cluster {
       process.executor = 'slurm'
       process.queue = 'general'
-      process.clusterOptions = ["-A xxxxxx"]
+      process.clusterOptions = ["-A r00606"]
       process.resourceLimits = [
          // The maximum amount of ram each process can use
          memory: 2.GB,
