@@ -103,6 +103,7 @@ Now you are ready, but not required, to merge these changes onto `main` and crea
 Begin by creating a release branch, and merge your development changes into this branch:
 ```bash
 git checkout main
+git pull
 git checkout -b release/2.1.0
 git merge develop
 ```
