@@ -696,7 +696,7 @@ def main(command_arguments: argparse.Namespace) -> int:
 
     if not template_path.is_file():
         logger.critical(
-            "Cannot find follow-up template file: " + template_path.as_posix()
+            "Cannot find follow-up template file: %s", template_path.as_posix()
         )
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), template_path.as_posix()
@@ -704,7 +704,7 @@ def main(command_arguments: argparse.Namespace) -> int:
 
     if not dcc_liver_scores_path.is_file():
         logger.critical(
-            "Cannot find DCC liver scores file: " + dcc_liver_scores_path.as_posix()
+            "Cannot find DCC liver scores file: %s", dcc_liver_scores_path.as_posix()
         )
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), dcc_liver_scores_path.as_posix()
@@ -712,27 +712,27 @@ def main(command_arguments: argparse.Namespace) -> int:
 
     if not dcc_med_info_path.is_file():
         logger.critical(
-            "Cannot find DCC medical information file: " + dcc_med_info_path.as_posix()
+            "Cannot find DCC medical information file: %s",  dcc_med_info_path.as_posix()
         )
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), dcc_med_info_path.as_posix()
         )
 
     if not dcc_vitals_path.is_file():
-        logger.critical("Cannot find DCC vitals file: " + dcc_vitals_path.as_posix())
+        logger.critical("Cannot find DCC vitals file: %s", dcc_vitals_path.as_posix())
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), dcc_vitals_path.as_posix()
         )
 
     if not dcc_soc_path.is_file():
-        logger.critical("Cannot find DCC SOC file: " + dcc_soc_path.as_posix())
+        logger.critical("Cannot find DCC SOC file: %s", dcc_soc_path.as_posix())
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), dcc_soc_path.as_posix()
         )
 
     if not node_output_path.is_dir():
         logger.critical(
-            "Cannot find node output directory: " + node_output_path.as_posix()
+            "Cannot find node output directory: %s", node_output_path.as_posix()
         )
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), node_output_path.as_posix()
@@ -748,13 +748,13 @@ def main(command_arguments: argparse.Namespace) -> int:
         )
 
     if not case_file_path.is_file():
-        logger.critical("Cannot find ARDaC case file: " + case_file_path.as_posix())
+        logger.critical("Cannot find ARDaC case file: %s", case_file_path.as_posix())
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), case_file_path.as_posix()
         )
 
     # Read the template TSV file to extract the headers
-    logger.info(f"Reading follow-up template CSV file: {template_path.as_posix()}")
+    logger.info("Reading follow-up template CSV file: %s", template_path.as_posix())
     df_template = pd.read_csv(
         template_path.as_posix(), sep="\t", nrows=0
     )  # Read only the header
@@ -780,13 +780,13 @@ def main(command_arguments: argparse.Namespace) -> int:
             node_file_path.as_posix(), sep="\t", index=False, header=True
         )
         logger.info(
-            f"Observational follow-up node saved as: {node_file_path.as_posix()}"
+            "Observational follow-up node saved as: %s", node_file_path.as_posix()
         )
         df_qc_obs.to_csv(
             node_file_qc_path.as_posix(), sep="\t", index=False, header=True
         )
         logger.info(
-            f"Observational follow-up QC file saved as: {node_file_qc_path.as_posix()}"
+            "Observational follow-up QC file saved as: %s", node_file_qc_path.as_posix()
         )
     elif command_arguments.subjectsType == "clinical":
         logger.info(
@@ -807,11 +807,11 @@ def main(command_arguments: argparse.Namespace) -> int:
         df_rct_output.to_csv(
             node_file_path.as_posix(), sep="\t", index=False, header=True
         )
-        logger.info(f"Clinical follow-up node saved as: {node_file_path.as_posix()}")
+        logger.info("Clinical follow-up node saved as: %s", node_file_path.as_posix())
         df_qc_rct.to_csv(
             node_file_qc_path.as_posix(), sep="\t", index=False, header=True
         )
-        logger.info(f"Clinical QC file saved as: {node_file_qc_path.as_posix()}")
+        logger.info("Clinical QC file saved as: %s", node_file_qc_path.as_posix())
     else:
         raise ValueError(
             f"Processing for subjects_type={command_arguments.subjectsType} is not implemented"
