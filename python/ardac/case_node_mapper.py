@@ -144,7 +144,7 @@ def main(command_arguments: argparse.Namespace) -> int:
        The logger to be used to provide user feedback
     """
     template_path = Path(
-        command_arguments.nodeTemplatesPath, _constants.case_template_file_name
+        command_arguments.nodeTemplatesPath, _constants.CASE_TEMPLATE_FILE_NAME
     )
     dcc_subjects_path = Path(command_arguments.dccSubjectsFile)
     node_output_path = Path(command_arguments.nodeOutputPath)
@@ -180,7 +180,7 @@ def main(command_arguments: argparse.Namespace) -> int:
 
     if command_arguments.subjectsType == "observational":
         logger.info("Transforming DCC observational subject data to ARDaC case node")
-        node_file_path = Path(node_output_path, _constants.case_obs_file_name)
+        node_file_path = Path(node_output_path, _constants.CASE_OBS_FILE_NAME)
         df_obs_output = generate_observational_case_node(
             dcc_subjects_path, template_headers
         )
@@ -189,7 +189,7 @@ def main(command_arguments: argparse.Namespace) -> int:
         )
     elif command_arguments.subjectsType == "clinical":
         logger.info("Transforming DCC clinical subject data to ARDaC case node")
-        node_file_path = Path(node_output_path, _constants.case_rct_file_name)
+        node_file_path = Path(node_output_path, _constants.CASE_RCT_FILE_NAME)
         df_rct_output = generate_clinical_case_node(dcc_subjects_path, template_headers)
         df_rct_output.to_csv(
             node_file_path.as_posix(), sep="\t", index=False, header=True
@@ -208,23 +208,23 @@ if __name__ == "__main__":
         description="""This utility generates ARDaC case nodes from observational or clinical trial DCC subject data provided in CSV format files.
          The user must provide the location of the ARDaC case node template file, the CSV file containing the DCC subject data, and the
          path to where the ARDaC case node file is to be written.""",
-        epilog=f"""Observational case node files are named \'{_constants.case_obs_file_name}\'.
-         Clinical case node files are named \'{_constants.case_rct_file_name}\'.  Case node files are written to the directory given by the --node_output_path argument.""",
+        epilog=f"""Observational case node files are named \'{_constants.CASE_OBS_FILE_NAME}\'.
+         Clinical case node files are named \'{_constants.CASE_RCT_FILE_NAME}\'.  Case node files are written to the directory given by the --node_output_path argument.""",
     )
     valid_log_level_names_mapping = logging.getLevelNamesMapping()
     valid_log_level_names_mapping.pop("NOTSET")  # Remove NOTSET option value
     parser.add_argument(
         "--version",
         action="version",
-        version=f"DCC_VERSION={_constants.dcc_release_string},MAPPING_VERSION={_constants.mapping_version_string}",
+        version=f"DCC_VERSION={_constants.DCC_RELEASE_STRING},MAPPING_VERSION={_constants.MAPPING_VERSION_STRING}",
     )
     parser.add_argument(
-        "--dcc_version", action="version", version=f"{_constants.dcc_release_string}"
+        "--dcc_version", action="version", version=f"{_constants.DCC_RELEASE_STRING}"
     )
     parser.add_argument(
         "--mapping_version",
         action="version",
-        version=f"{_constants.mapping_version_string}",
+        version=f"{_constants.MAPPING_VERSION_STRING}",
     )
     parser.add_argument(
         "--log_level",
@@ -256,7 +256,7 @@ if __name__ == "__main__":
         "--node_output_path",
         dest="nodeOutputPath",
         required=True,
-        help=f"Path to the directory where the TSV case node file is to be saved.  The file name will be either {_constants.case_obs_file_name} or {_constants.case_rct_file_name}",
+        help=f"Path to the directory where the TSV case node file is to be saved.  The file name will be either {_constants.CASE_OBS_FILE_NAME} or {_constants.CASE_RCT_FILE_NAME}",
     )
 
     parsed_args = parser.parse_args()

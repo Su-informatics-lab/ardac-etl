@@ -240,7 +240,7 @@ def main(command_arguments: argparse.Namespace) -> int:
        The logger to be used to provide user feedback
     """
     template_path = Path(
-        command_arguments.nodeTemplatesPath, _constants.demographic_template_file_name
+        command_arguments.nodeTemplatesPath, _constants.DEMOGRAPHIC_TEMPLATE_FILE_NAME
     )
     dcc_subjects_path = Path(command_arguments.dccSubjectsFile)
     node_output_path = Path(command_arguments.nodeOutputPath)
@@ -270,9 +270,9 @@ def main(command_arguments: argparse.Namespace) -> int:
         )
 
     if command_arguments.subjectsType == "observational":
-        case_file_path = Path(node_output_path, _constants.case_obs_file_name)
+        case_file_path = Path(node_output_path, _constants.CASE_OBS_FILE_NAME)
     elif command_arguments.subjectsType == "clinical":
-        case_file_path = Path(node_output_path, _constants.case_rct_file_name)
+        case_file_path = Path(node_output_path, _constants.CASE_RCT_FILE_NAME)
     else:
         raise ValueError(
             f"Processing for subjects_type={command_arguments.subjectsType} is not implemented"
@@ -293,7 +293,7 @@ def main(command_arguments: argparse.Namespace) -> int:
 
     if command_arguments.subjectsType == "observational":
         logger.info("Transforming observational subject data")
-        node_file_path = Path(node_output_path, _constants.demographic_obs_file_name)
+        node_file_path = Path(node_output_path, _constants.DEMOGRAPHIC_OBS_FILE_NAME)
         df_obs_output = generate_observational_demographic_node(
             dcc_subjects_path, case_file_path, template_headers
         )
@@ -305,7 +305,7 @@ def main(command_arguments: argparse.Namespace) -> int:
         )
     elif command_arguments.subjectsType == "clinical":
         logger.info("Transforming clinical audit data")
-        node_file_path = Path(node_output_path, _constants.demographic_rct_file_name)
+        node_file_path = Path(node_output_path, _constants.DEMOGRAPHIC_RCT_FILE_NAME)
         df_rct_output = generate_clinical_demographic_node(
             dcc_subjects_path, case_file_path, template_headers
         )
@@ -328,8 +328,8 @@ if __name__ == "__main__":
          The DCC subject files are provided in CSV format, and the ARDaC case node files are provided in ARDaC node TSV format.
          The user must provide the location of the ARDaC demographic node template file, the CSV file containing the DCC subject data,
          and the path to where the ARDaC demographic node file is to be written.""",
-        epilog=f"""Observational case node files are named \'{_constants.case_obs_file_name}\'.
-         Clinical case node files are named \'{_constants.case_rct_file_name}\'.  Demographic node files are written to the directory given by the --node_output_path argument.
+        epilog=f"""Observational case node files are named \'{_constants.CASE_OBS_FILE_NAME}\'.
+         Clinical case node files are named \'{_constants.CASE_RCT_FILE_NAME}\'.  Demographic node files are written to the directory given by the --node_output_path argument.
          The ARDaC case node input TSV file is also expected to be at this location""",
     )
     valid_log_level_names_mapping = logging.getLevelNamesMapping()
@@ -337,15 +337,15 @@ if __name__ == "__main__":
     parser.add_argument(
         "--version",
         action="version",
-        version=f"DCC_VERSION={_constants.dcc_release_string},MAPPING_VERSION={_constants.mapping_version_string}",
+        version=f"DCC_VERSION={_constants.DCC_RELEASE_STRING},MAPPING_VERSION={_constants.MAPPING_VERSION_STRING}",
     )
     parser.add_argument(
-        "--dcc_version", action="version", version=f"{_constants.dcc_release_string}"
+        "--dcc_version", action="version", version=f"{_constants.DCC_RELEASE_STRING}"
     )
     parser.add_argument(
         "--mapping_version",
         action="version",
-        version=f"{_constants.mapping_version_string}",
+        version=f"{_constants.MAPPING_VERSION_STRING}",
     )
     parser.add_argument(
         "--log_level",
@@ -378,7 +378,7 @@ if __name__ == "__main__":
         dest="nodeOutputPath",
         required=True,
         help=f"""Path to the directory where the TSV audit node file is to be saved
-                       -- the file name will be either {_constants.audit_obs_file_name} or {_constants.demographic_rct_file_name}.
+                       -- the file name will be either {_constants.AUDIT_OBS_FILE_NAME} or {_constants.DEMOGRAPHIC_RCT_FILE_NAME}.
                        This argument is also the expected location of the input ARDaC case node TSV file.""",
     )
 

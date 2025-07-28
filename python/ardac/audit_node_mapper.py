@@ -189,7 +189,7 @@ def main(command_arguments: argparse.Namespace) -> int:
     command_arguments : argparse.Namespace
        The command line arguments processed by argparse
     """
-    template_path = Path(command_arguments.nodeTemplatesPath, _constants.audit_template_file_name)
+    template_path = Path(command_arguments.nodeTemplatesPath, _constants.AUDIT_TEMPLATE_FILE_NAME)
     dcc_audit_path = Path(command_arguments.dccAuditFile)
     node_output_path = Path(command_arguments.nodeOutputPath)
 
@@ -206,9 +206,9 @@ def main(command_arguments: argparse.Namespace) -> int:
         raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), node_output_path.as_posix())
 
     if command_arguments.subjectsType == "observational":
-        case_file_path = Path(node_output_path, _constants.case_obs_file_name)
+        case_file_path = Path(node_output_path, _constants.CASE_OBS_FILE_NAME)
     elif command_arguments.subjectsType == "clinical":
-        case_file_path = Path(node_output_path, _constants.case_rct_file_name)
+        case_file_path = Path(node_output_path, _constants.CASE_RCT_FILE_NAME)
     else:
         raise ValueError(f"Processing for subjects_type={command_arguments.subjectsType} is not implemented")
 
@@ -223,8 +223,8 @@ def main(command_arguments: argparse.Namespace) -> int:
 
     if command_arguments.subjectsType == "observational":
         logger.info("Transforming observational audit data")
-        node_file_path = Path(node_output_path, _constants.audit_obs_file_name)
-        node_file_unmatched_path = Path(node_output_path, _constants.audit_obs_unmatched_file_name)
+        node_file_path = Path(node_output_path, _constants.AUDIT_OBS_FILE_NAME)
+        node_file_unmatched_path = Path(node_output_path, _constants.AUDIT_OBS_UNMATCHED_FILE_NAME)
         df_obs_output, df_unmatched_obs = generate_observational_audit_node(
             dcc_audit_path, case_file_path, template_headers
         )
@@ -234,8 +234,8 @@ def main(command_arguments: argparse.Namespace) -> int:
         logger.info("Observational QC file saved as: %s", node_file_unmatched_path.as_posix())
     elif command_arguments.subjectsType == "clinical":
         logger.info("Transforming clinical audit data")
-        node_file_path = Path(node_output_path, _constants.audit_rct_file_name)
-        node_file_unmatched_path = Path(node_output_path, _constants.audit_rct_unmatched_file_name)
+        node_file_path = Path(node_output_path, _constants.AUDIT_RCT_FILE_NAME)
+        node_file_unmatched_path = Path(node_output_path, _constants.AUDIT_RCT_UNMATCHED_FILE_NAME)
         df_rct_output, df_unmatched_rct = generate_clinical_audit_node(dcc_audit_path, case_file_path, template_headers)
         df_rct_output.to_csv(node_file_path.as_posix(), sep="\t", index=False, header=True)
         logger.info("Clinical audit node saved as: %s", node_file_path.as_posix())
@@ -254,8 +254,8 @@ if __name__ == "__main__":
          The DCC audit files are provided in CSV format, and the ARDaC case node files are provided in ARDaC node TSV format.
          The user must provide the location of the ARDaC audit node template file, the CSV file containing the DCC audit data,
          and the path to where the ARDaC audit node and quality control files are to be written.""",
-        epilog=f"""Observational audit node files are named \'{_constants.audit_obs_file_name}\', and observational QC files are named \'{_constants.audit_obs_unmatched_file_name}\'.
-         Clinical audit node files are named \'{_constants.audit_rct_file_name}\', and clinical QC files are named \'{_constants.audit_rct_unmatched_file_name}\'.  Audit node files are written to the directory given by the --node_output_path argument.
+        epilog=f"""Observational audit node files are named \'{_constants.AUDIT_OBS_FILE_NAME}\', and observational QC files are named \'{_constants.AUDIT_OBS_UNMATCHED_FILE_NAME}\'.
+         Clinical audit node files are named \'{_constants.AUDIT_RCT_FILE_NAME}\', and clinical QC files are named \'{_constants.AUDIT_RCT_UNMATCHED_FILE_NAME}\'.  Audit node files are written to the directory given by the --node_output_path argument.
          The ARDaC case node input TSV file is also expected to be at this location""",
     )
     valid_log_level_names_mapping = logging.getLevelNamesMapping()
@@ -263,10 +263,10 @@ if __name__ == "__main__":
     parser.add_argument(
         "--version",
         action="version",
-        version=f"DCC_VERSION={_constants.dcc_release_string},MAPPING_VERSION={_constants.mapping_version_string}",
+        version=f"DCC_VERSION={_constants.DCC_RELEASE_STRING},MAPPING_VERSION={_constants.MAPPING_VERSION_STRING}",
     )
-    parser.add_argument("--dcc_version", action="version", version=f"{_constants.dcc_release_string}")
-    parser.add_argument("--mapping_version", action="version", version=f"{_constants.mapping_version_string}")
+    parser.add_argument("--dcc_version", action="version", version=f"{_constants.DCC_RELEASE_STRING}")
+    parser.add_argument("--mapping_version", action="version", version=f"{_constants.MAPPING_VERSION_STRING}")
     parser.add_argument(
         "--log_level",
         dest="logLevel",
@@ -298,7 +298,7 @@ if __name__ == "__main__":
         dest="nodeOutputPath",
         required=True,
         help=f"""Path to the directory where the TSV audit node file is to be saved
-                       -- the file name will be either {_constants.audit_obs_file_name} or {_constants.audit_rct_file_name}.
+                       -- the file name will be either {_constants.AUDIT_OBS_FILE_NAME} or {_constants.AUDIT_RCT_FILE_NAME}.
                        This argument is also the expected location of the input ARDaC case node TSV file."""
     )
 

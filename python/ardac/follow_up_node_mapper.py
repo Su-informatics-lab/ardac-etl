@@ -686,7 +686,7 @@ def main(command_arguments: argparse.Namespace) -> int:
        The logger to be used to provide user feedback
     """
     template_path = Path(
-        command_arguments.nodeTemplatesPath, _constants.follow_up_template_file_name
+        command_arguments.nodeTemplatesPath, _constants.FOLLOW_UP_TEMPLATE_FILE_NAME
     )
     dcc_liver_scores_path = Path(command_arguments.dccLiverScoresFile)
     dcc_med_info_path = Path(command_arguments.dccMedInfoFile)
@@ -739,9 +739,9 @@ def main(command_arguments: argparse.Namespace) -> int:
         )
 
     if command_arguments.subjectsType == "observational":
-        case_file_path = Path(node_output_path, _constants.case_obs_file_name)
+        case_file_path = Path(node_output_path, _constants.CASE_OBS_FILE_NAME)
     elif command_arguments.subjectsType == "clinical":
-        case_file_path = Path(node_output_path, _constants.case_rct_file_name)
+        case_file_path = Path(node_output_path, _constants.CASE_RCT_FILE_NAME)
     else:
         raise ValueError(
             f"Processing for subjects_type={command_arguments.subjectsType} is not implemented"
@@ -764,9 +764,9 @@ def main(command_arguments: argparse.Namespace) -> int:
         logger.info(
             "Extracting observational follow-up data and creating ARDaC follow-up node"
         )
-        node_file_path = Path(node_output_path, _constants.follow_up_obs_file_name)
+        node_file_path = Path(node_output_path, _constants.FOLLOW_UP_OBS_FILE_NAME)
         node_file_qc_path = Path(
-            node_output_path, _constants.follow_up_qc_obs_file_name
+            node_output_path, _constants.FOLLOW_UP_QC_OBS_FILE_NAME
         )
         df_obs_output, df_qc_obs = generate_observational_follow_up_node(
             dcc_liver_scores_path,
@@ -792,9 +792,9 @@ def main(command_arguments: argparse.Namespace) -> int:
         logger.info(
             "Extracting clinical follow-up data and creating ARDaC follow-up node"
         )
-        node_file_path = Path(node_output_path, _constants.follow_up_rct_file_name)
+        node_file_path = Path(node_output_path, _constants.FOLLOW_UP_RCT_FILE_NAME)
         node_file_qc_path = Path(
-            node_output_path, _constants.follow_up_qc_rct_file_name
+            node_output_path, _constants.FOLLOW_UP_QC_RCT_FILE_NAME
         )
         df_rct_output, df_qc_rct = generate_clinical_follow_up_node(
             dcc_liver_scores_path,
@@ -826,8 +826,8 @@ if __name__ == "__main__":
         description="""This utility generates ARDaC follow-up nodes from ARDaC case nodes and observational or clinical trial DCC liver scores, medical information, vitals, and SOC data provided in CSV format files.
          The user must provide the location of the ARDaC follow-up node template file, the CSV files containing the DCC datasets, and the
          path to where the ARDaC follow-up node and quality control files are to be written.""",
-        epilog=f"""Observational follow-up node files are named \'{_constants.follow_up_obs_file_name}\', and observational QC files are named \'{_constants.follow_up_qc_obs_file_name}\'.
-         Clinical follow-up node files are named \'{_constants.follow_up_rct_file_name}\', and clinical QC files are named \'{_constants.follow_up_qc_rct_file_name}\'.  Node files are written to the directory given by the --node_output_path argument.
+        epilog=f"""Observational follow-up node files are named \'{_constants.FOLLOW_UP_OBS_FILE_NAME}\', and observational QC files are named \'{_constants.FOLLOW_UP_QC_OBS_FILE_NAME}\'.
+         Clinical follow-up node files are named \'{_constants.FOLLOW_UP_RCT_FILE_NAME}\', and clinical QC files are named \'{_constants.FOLLOW_UP_QC_RCT_FILE_NAME}\'.  Node files are written to the directory given by the --node_output_path argument.
          The ARDaC case node input TSV file also expected to be at this location.""",
     )
     valid_log_level_names_mapping = logging.getLevelNamesMapping()
@@ -835,15 +835,15 @@ if __name__ == "__main__":
     parser.add_argument(
         "--version",
         action="version",
-        version=f"DCC_VERSION={_constants.dcc_release_string},MAPPING_VERSION={_constants.mapping_version_string}",
+        version=f"DCC_VERSION={_constants.DCC_RELEASE_STRING},MAPPING_VERSION={_constants.MAPPING_VERSION_STRING}",
     )
     parser.add_argument(
-        "--dcc_version", action="version", version=f"{_constants.dcc_release_string}"
+        "--dcc_version", action="version", version=f"{_constants.DCC_RELEASE_STRING}"
     )
     parser.add_argument(
         "--mapping_version",
         action="version",
-        version=f"{_constants.mapping_version_string}",
+        version=f"{_constants.MAPPING_VERSION_STRING}",
     )
     parser.add_argument(
         "--log_level",
@@ -893,7 +893,7 @@ if __name__ == "__main__":
         "--node_output_path",
         dest="nodeOutputPath",
         required=True,
-        help=f"Path to the directory where the TSV case node file is to be saved.  The file name will be either {_constants.case_obs_file_name} or {_constants.case_rct_file_name}",
+        help=f"Path to the directory where the TSV case node file is to be saved.  The file name will be either {_constants.CASE_OBS_FILE_NAME} or {_constants.CASE_RCT_FILE_NAME}",
     )
 
     parsed_args = parser.parse_args()
