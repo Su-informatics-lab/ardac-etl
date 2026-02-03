@@ -228,9 +228,9 @@ def generate_clinical_demographic_node(
 def main(command_arguments: argparse.Namespace) -> int:
     """
     This function implements the steps needed for converting observational or clinical
-    subject and case data into an ARDaC  node.  The subject data is provided in a CSV file
+    subject and case data into an ARDaC demographic nodes.  The subject data is provided in a CSV file
     and converted to an ARDaC demographic node file in TSV format containing the fields given in
-    the ARDaC case audit template.
+    the ARDaC demographic template.
 
     Parameters
     ----------
@@ -304,7 +304,7 @@ def main(command_arguments: argparse.Namespace) -> int:
             "Observational demographic node saved as: %s", node_file_path.as_posix()
         )
     elif command_arguments.subjectsType == "clinical":
-        logger.info("Transforming clinical audit data")
+        logger.info("Transforming clinical subject data")
         node_file_path = Path(node_output_path, _constants.DEMOGRAPHIC_RCT_FILE_NAME)
         df_rct_output = generate_clinical_demographic_node(
             dcc_subjects_path, case_file_path, template_headers
@@ -377,8 +377,8 @@ if __name__ == "__main__":
         "--node_output_path",
         dest="nodeOutputPath",
         required=True,
-        help=f"""Path to the directory where the TSV audit node file is to be saved
-                       -- the file name will be either {_constants.AUDIT_OBS_FILE_NAME} or {_constants.DEMOGRAPHIC_RCT_FILE_NAME}.
+        help=f"""Path to the directory where the TSV demographic node file is to be saved
+                       -- the file name will be either {_constants.DEMOGRAPHIC_OBS_FILE_NAME} or {_constants.DEMOGRAPHIC_RCT_FILE_NAME}.
                        This argument is also the expected location of the input ARDaC case node TSV file.""",
     )
 
