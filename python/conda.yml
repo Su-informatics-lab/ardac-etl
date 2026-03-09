@@ -12,3 +12,4 @@ dependencies:
     - pytz==2025.1
     - six==1.17.0
     - tzdata==2025.1
+    - gen3==4.27.6
