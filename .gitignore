@@ -1,0 +1,14 @@
+# Credentials
+credentials_*.json
+
+# Trash
+.DS_Store
+
+# IDE
+.vscode/
+
+# Virtual environments
+venv/
+
+# Output files
+*.log
