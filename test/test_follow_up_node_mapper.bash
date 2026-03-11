@@ -20,7 +20,7 @@ DCC_RCT_VITALS_FILE=${DCC_RCT_PATH}/RCT_VITALS.csv
 DCC_OBS_SOC_FILE=${DCC_OBS_PATH}/OBS_SOC.csv
 DCC_RCT_SOC_FILE=${DCC_RCT_PATH}/RCT_SOC.csv
 
-mapper_script=${MAPPERS_HOME}/python/ardac/follow_up_node_mapper.py
+mapper_script=${MAPPERS_HOME}/python/ardac/etl/follow_up_node_mapper.py
 echo "INFO($this_script_name): mapper_script=${mapper_script}"
 
 version=$(python ${mapper_script} --version)

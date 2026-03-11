@@ -27,7 +27,7 @@ params {
    ardac_etl_path = "/path/to/ardac/projects/ardac-etl"
 
    // Full path to the Python scripts
-   ardac_mapper_scripts = "${params.ardac_etl_path}/python/ardac"
+   ardac_mapper_scripts = "${params.ardac_etl_path}/python/ardac/etl"
 
    // Full path to input base directory
    input_directory = "/path/to/ardac/development/dcc_v2.0.0_data"
