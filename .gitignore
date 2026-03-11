@@ -10,5 +10,17 @@ credentials_*.json
 # Virtual environments
 venv/
 
-# Output files
+# Python
+__pycache__/
+
+# Configuration files
+nextflow.config
+
+# Log files
 *.log
+nextflow/.nextflow.log.*
+nextflow/.nextflow/
+
+# Profiling files
+ardac_etl_timeline.html
+trace-*-*.txt
