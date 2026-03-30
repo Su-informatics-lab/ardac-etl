@@ -248,7 +248,7 @@ def main(command_arguments: argparse.Namespace) -> int:
 
 
 if __name__ == "__main__":
-    status = 0
+    status = 3
     parser = argparse.ArgumentParser(
         description="""This utility generates ARDaC audit nodes from observational or clinical trial DCC audit files and ARDaC case node files.
          The DCC audit files are provided in CSV format, and the ARDaC case node files are provided in ARDaC node TSV format.
@@ -323,8 +323,5 @@ if __name__ == "__main__":
         logger.critical("Command line argument or parameter had a bad value: %s", e)
     except Exception as e:
         logger.critical("Caught an exception", exc_info=True)
-    finally:
-        if 'status' not in locals():
-            status = 3
 
     exit(status)

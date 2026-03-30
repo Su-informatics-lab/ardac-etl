@@ -1,5 +1,6 @@
 #!/usr/bin/env nextflow
 
+include { DELETE_NODES } from './modules/gen3_utilities.nf'
 include { GET_MAPPER_DCC_VERSION } from './modules/mappers.nf'
 include { CASE_NODE_MAPPER } from './modules/mappers.nf'
 include { DEMOGRAPHIC_NODE_MAPPER } from './modules/mappers.nf'
@@ -80,6 +81,14 @@ workflow {
       if (path.text.trim() != params.dcc_release)
          error "Mapper DCC version (${path.text}) does not match Nextflow DCC version (${params.dcc_release})"
    }
+
+   // Any errors in DELETE_NODES will automatically fail the workflow
+   // Optionally add explicit error handling:
+   // DELETE_NODES.subscribe { 
+   //   onError { error ->
+   //      error("DELETE_NODES process failed: ${error}")
+   //   }
+   // }
 
    CASE_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type, subjects_val)
 
