@@ -7,6 +7,7 @@ from pathlib import Path
 import pandas as pd
 import _constants
 
+
 def generate_observational_audit_node(
     obs_audit_path: Path, obs_case_path: Path, template_headers: list[str]
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
