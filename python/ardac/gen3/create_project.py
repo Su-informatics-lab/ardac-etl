@@ -93,7 +93,7 @@ if __name__ == "__main__":
         logger.info(f'Creating submission object for {parsed_args.commons_url}')
         submission = Gen3Submission(parsed_args.commons_url, auth)
     except Exception:
-        logger.critical('Caught and exceptoin while initializing submission object', exc_info=True)
+        logger.critical('Caught an exception while initializing submission object', exc_info=True)
         exit(status)
 
     try:
