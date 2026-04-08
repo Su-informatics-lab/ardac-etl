@@ -8,8 +8,6 @@ from gen3.auth import Gen3Auth
 from gen3.query import Gen3Query
 
 def main(parsed_args: Namespace, query: Gen3Submission) -> int:
-    logger = logging.getLogger(__name__)
-    
     try:
         logger.info(f'Checking if record exists: program={parsed_args.program_name}, '
                    f'project={parsed_args.project_name}, node_type={parsed_args.node_type}, '
@@ -135,7 +133,7 @@ if __name__ == "__main__":
     logger.setLevel(parsed_args.log_level)
 
     try:
-        logger.info(f'Creating authorization token with key file {parsed_args.api_key_file} on commons {parsed_args.commons_url}', exc_info=True)
+        logger.info(f'Creating authorization token with key file {parsed_args.api_key_file} on commons {parsed_args.commons_url}')
         auth = Gen3Auth(parsed_args.commons_url, refresh_file=parsed_args.api_key_file)
     except Exception:
         logger.critical('Caught an exception while generating the access token', exc_info=True)
