@@ -35,13 +35,24 @@ def main(parsed_args: Namespace, query: Gen3Submission) -> int:
         #    sort_object={"submitter_id": "asc"}
         #)
 
+        #query_str = f"""{{
+        #    {parsed_args.node_type}(submitter_id: \"{parsed_args.submitter_id}\") {{
+        #        submitter_id
+        #        id
+        #    }}
+        #}}"""
+
+        # Build a Gen3 GraphQL query that constrains the node search to the requested project
+        # and uses a filter on submitter_id. This is compatible with Gen3 query syntax.
+        project_id = f"{parsed_args.program_name}-{parsed_args.project_name}"
         query_str = f"""{{
-            {parsed_args.node_type}(submitter_id: \"{parsed_args.submitter_id}\") {{
-                submitter_id
+            {parsed_args.node_type}(first: 1, project_id: \"{project_id}\", submitter_id: \"{parsed_args.submitter_id}\") {{
                 id
+                submitter_id
             }}
         }}"""
 
+        logger.info(f'Constructed query string: {query_str}')
         result = query.query(query_str)
 
         logger.debug(f'Query result: {result}')
