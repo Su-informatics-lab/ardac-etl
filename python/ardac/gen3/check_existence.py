@@ -12,35 +12,6 @@ def main(parsed_args: Namespace, query: Gen3Submission) -> int:
         logger.info(f'Checking if record exists: program={parsed_args.program_name}, '
                    f'project={parsed_args.project_name}, node_type={parsed_args.node_type}, '
                    f'submitter_id={parsed_args.submitter_id}')
-        
-        # Query the Gen3 commons to check if the record exists
-        #query_string = f"""
-        #query {{
-        #    {parsed_args.node_type}(filter: {{submitter_id: {{eq: "{parsed_args.submitter_id}"}}}}, 
-        #                first: 1) {{
-        #        id
-        #        submitter_id
-        #    }}
-        #}}
-        #"""
-        
-        # This is for the flat query, but that service is not active in ARDaC
-        #result = query.query(
-        #    data_type=f"{parsed_args.node_type}",
-        #    first=1,
-        #    fields=[
-        #        "submitter_id"
-        #    ],
-        #    filters={"submitter_id": f"{parsed_args.submitter_id}"},
-        #    sort_object={"submitter_id": "asc"}
-        #)
-
-        #query_str = f"""{{
-        #    {parsed_args.node_type}(submitter_id: \"{parsed_args.submitter_id}\") {{
-        #        submitter_id
-        #        id
-        #    }}
-        #}}"""
 
         # Build a Gen3 GraphQL query that constrains the node search to the requested project
         # and uses a filter on submitter_id. This is compatible with Gen3 query syntax.
