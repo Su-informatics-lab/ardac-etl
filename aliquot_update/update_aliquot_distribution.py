@@ -116,7 +116,7 @@ QC_FILENAMES = {
     "missing_catalog": "missing_catalog_biospecimens.tsv",
     "extraneous_protocol": "extraeneous_collection_protocols.tsv",
     "missing_ardac": "missing_ardac_biospecimens.tsv",
-    "redundant": "redundant_manifest_records.tsv",
+    "switched_lab": "aliquots_laboratory_switch.tsv",
     "inconsistent_availability": "inconsistent_availability_status.tsv",
 }
 
@@ -361,7 +361,7 @@ def update_aliquot_distribution(
         if aliquot_row is None:
             qc["missing_ardac"].add(barcode)
         elif aliquot_row["labs.submitter_id"].strip() not in {"", "lab_0"}:
-            qc["redundant"].add(barcode)
+            qc["switched_lab"].add(barcode)
 
     output_directory.mkdir(parents=True, exist_ok=True)
     for category, filename in QC_FILENAMES.items():

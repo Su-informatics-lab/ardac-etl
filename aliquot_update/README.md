@@ -25,7 +25,7 @@ the supplied submission template, along with:
 - `missing_catalog_biospecimens.tsv`
 - `extraeneous_collection_protocols.tsv` (name preserved from the specification)
 - `missing_ardac_biospecimens.tsv`
-- `redundant_manifest_records.tsv`
+- `aliquots_laboratory_switch.tsv`
 - `inconsistent_availability_status.tsv`
 
 Every QC file is written even when it has no findings. A malformed input schema
