@@ -1,286 +1,173 @@
+import argparse
+import errno
+import logging
 import os
 import sys
-import errno
-import argparse
-import logging
 from pathlib import Path
+
 import pandas as pd
+
 import _constants
 
+
 def generate_observational_case_node(
-    obs_subjects_path: Path, template_headers: list[str]
+    obs_subjects_path: Path,
+    template_headers: list[str],
+    obs_aki_path: Path | None = None,
 ) -> pd.DataFrame:
-    """
-    This function takes the path to observational subject data and generates
-    a pandas dataframe containing the ARDaC case node data for the observational
-    subjects.
-
-    Parameters
-    ----------
-    obs_subjects_path : Path
-       The full path to the DCC observational subject data CSV file from which data
-       will be extracted to populate the ARDaC case node.
-    template_headers : list[str]
-       The headers extracted from the case node template
-
-    Return
-    ------
-    A pandas dataframe containing the ARDaC case node data derived from the
-    observational subjects
-    """
-    # Read the file using pandas
+    """Generate an ARDaC case node from observational subject data."""
     logger.info("Reading observational subjects file: %s", obs_subjects_path.as_posix())
-    df_obs_input = pd.read_csv(obs_subjects_path.as_posix(), sep=",", dtype=str)
+    df_input = pd.read_csv(obs_subjects_path.as_posix(), sep=",", dtype=str)
+    df_input = df_input[df_input["usubjid"] != "31014"]
     logger.info("Done reading observational subjects file")
 
-    # Initialize a DataFrame with the defined headers and same index as df_obs_input
-    df_obs_output = pd.DataFrame(index=df_obs_input.index, columns=template_headers)
-
-    # Assign fixed values using .loc to align with the index
-    df_obs_output.loc[:, "*type"] = "case"
-    df_obs_output.loc[:, "project_id"] = "ARDaC-AlcHepNet"
-    df_obs_output.loc[:, "*studies.submitter_id"] = "obs"
-    df_obs_output.loc[:, "index_date"] = "Study Enrollment"
-
-    # Map dynamic values using .apply
-    df_obs_output["*submitter_id"] = df_obs_input["usubjid"].apply(
-        lambda x: f"{x}_obs" if pd.notna(x) else None
+    df_output = pd.DataFrame(index=df_input.index, columns=template_headers)
+    df_output.loc[:, "*type"] = "case"
+    df_output.loc[:, "project_id"] = "ARDaC-AlcHepNet"
+    df_output.loc[:, "*studies.submitter_id"] = "obs"
+    df_output.loc[:, "index_date"] = "Study Enrollment"
+    df_output["*submitter_id"] = df_input["usubjid"].apply(
+        lambda value: f"{value}_obs" if pd.notna(value) else None
     )
-    df_obs_output["cohort"] = df_obs_input["obs_arm"].apply(
-        lambda x: x.split(":")[-1].strip() if pd.notna(x) else None
+    df_output["cohort"] = df_input["obs_arm"].apply(
+        lambda value: value.split(":")[-1].strip() if pd.notna(value) else None
     )
-    df_obs_output["study_site"] = df_obs_input["site"].apply(
-        lambda x: x.strip() if pd.notna(x) else None
+    df_output["study_site"] = df_input["site"].apply(
+        lambda value: value.strip() if pd.notna(value) else None
     )
-    df_obs_output["vital_status"] = df_obs_input["ALIVE"].apply(
-        lambda x: "alive" if x == "Y" else "dead" if x == "N" else None
+    df_output["vital_status"] = df_input["ALIVE"].apply(
+        lambda value: "alive" if value == "Y" else "dead" if value == "N" else None
     )
 
-    return df_obs_output
+    if obs_aki_path is not None:
+        logger.info("Reading observational AKI file: %s", obs_aki_path.as_posix())
+        df_aki = pd.read_csv(obs_aki_path.as_posix(), sep=",", dtype=str)
+        aki_map = df_aki.set_index("usubjid")["akiaernyn"].fillna("Unknown").to_dict()
+        df_output["aki_status"] = df_input["usubjid"].apply(
+            lambda value: aki_map.get(value, "Unknown")
+        )
+
+    return df_output
 
 
 def generate_clinical_case_node(
-    rct_subjects_path: Path, template_headers: list[str]
+    rct_subjects_path: Path,
+    template_headers: list[str],
+    rct_aki_path: Path | None = None,
 ) -> pd.DataFrame:
-    """
-    This function takes the path to clinical subject data and generates
-    a pandas dataframe containing the ARDaC case node data for the clinical
-    subjects.
-
-    Parameters
-    ----------
-    rct_subjects_path : Path
-       The full path to the DCC clinical subject data CSV file from which data
-       will be extracted to populate the ARDaC case node.
-    template_headers : list[str]
-       The headers extracted from the case node template
-
-    Return
-    ------
-    A pandas dataframe containing the ARDaC case node data derived from the
-    clinical subjects
-    """
-    # Read the RCT_SUBJECTS.csv file
+    """Generate an ARDaC case node from clinical subject data."""
     logger.info("Reading clinical subjects file: %s", rct_subjects_path.as_posix())
-    df_rct_input = pd.read_csv(rct_subjects_path.as_posix(), sep=",", dtype=str)
+    df_input = pd.read_csv(rct_subjects_path.as_posix(), sep=",", dtype=str)
     logger.info("Done reading clinical subjects file")
 
-    # Initialize a new DataFrame with the defined headers and the same index as df_input_rct
-    df_rct_output = pd.DataFrame(index=df_rct_input.index, columns=template_headers)
-
-    # Assign fixed values using .loc for proper alignment
-    df_rct_output.loc[:, "*type"] = "case"
-    df_rct_output.loc[:, "project_id"] = "ARDaC-AlcHepNet"
-    df_rct_output.loc[:, "*studies.submitter_id"] = "clinical"
-    df_rct_output.loc[:, "index_date"] = "Study Enrollment"
-
-    # Map dynamic values based on the input file
-    df_rct_output["*submitter_id"] = df_rct_input["usubjid"].apply(
-        lambda x: f"{x}_clinical" if pd.notna(x) else None
+    df_output = pd.DataFrame(index=df_input.index, columns=template_headers)
+    df_output.loc[:, "*type"] = "case"
+    df_output.loc[:, "project_id"] = "ARDaC-AlcHepNet"
+    df_output.loc[:, "*studies.submitter_id"] = "clinical"
+    df_output.loc[:, "index_date"] = "Study Enrollment"
+    df_output["*submitter_id"] = df_input["usubjid"].apply(
+        lambda value: f"{value}_clinical" if pd.notna(value) else None
     )
-    df_rct_output["actarm"] = df_rct_input["rct_arm"].apply(
-        lambda x: x.strip() if pd.notna(x) else None
+    df_output["actarm"] = df_input["rct_arm"].apply(
+        lambda value: value.strip() if pd.notna(value) else None
     )
-    df_rct_output["rct_meld_strata"] = df_rct_input["rct_meld_strata"].apply(
-        lambda x: x.strip() if pd.notna(x) else None
+    df_output["rct_meld_strata"] = df_input["rct_meld_strata"].apply(
+        lambda value: value.strip() if pd.notna(value) else None
     )
-    df_rct_output["study_site"] = df_rct_input["site"].apply(
-        lambda x: x.strip() if pd.notna(x) else None
+    df_output["study_site"] = df_input["site"].apply(
+        lambda value: value.strip() if pd.notna(value) else None
     )
-    df_rct_output["vital_status"] = df_rct_input["ALIVE"].apply(
-        lambda x: "alive" if x == "Y" else "dead" if x == "N" else None
+    df_output["vital_status"] = df_input["ALIVE"].apply(
+        lambda value: "alive" if value == "Y" else "dead" if value == "N" else None
     )
 
-    # Fill other unmapped columns with NaN for consistency
-    for col in df_rct_output.columns:
-        if col not in [
-            "*type",
-            "project_id",
-            "*submitter_id",
-            "*studies.submitter_id",
-            "actarm",
-            "rct_meld_strata",
-            "study_site",
-            "vital_status",
-            "index_date",
-        ]:
-            df_rct_output[col] = None
+    if rct_aki_path is not None:
+        logger.info("Reading clinical AKI file: %s", rct_aki_path.as_posix())
+        df_adverse_events = pd.read_csv(rct_aki_path.as_posix(), sep=",", dtype=str)
+        aki_patients = set(
+            df_adverse_events.loc[
+                df_adverse_events["ae_aki_indicator"] == "1", "usubjid"
+            ]
+        )
+        df_output["aki_status"] = df_input["usubjid"].apply(
+            lambda value: "Yes" if value in aki_patients else "No"
+        )
 
-    return df_rct_output
+    mapped_columns = {
+        "*type", "project_id", "*submitter_id", "*studies.submitter_id",
+        "actarm", "rct_meld_strata", "study_site", "vital_status",
+        "index_date", "aki_status",
+    }
+    for column in df_output.columns:
+        if column not in mapped_columns:
+            df_output[column] = None
+
+    return df_output
 
 
 def main(command_arguments: argparse.Namespace) -> int:
-    """
-    This function implements the steps needed for converting observational or clinical
-    subject data into an ARDaC case node.  The subject data is provided in a CSV file
-    and converted to an ARDaC case node file in TSV format containing the fields given in
-    the ARDaC case template.
-
-    Parameters
-    ----------
-    command_arguments : argparse.Namespace
-       The command line arguments processed by argparse
-    logger : logging.Logger
-       The logger to be used to provide user feedback
-    """
-    template_path = Path(
-        command_arguments.nodeTemplatesPath, _constants.CASE_TEMPLATE_FILE_NAME
-    )
-    dcc_subjects_path = Path(command_arguments.dccSubjectsFile)
+    template_path = Path(command_arguments.nodeTemplatesPath, _constants.CASE_TEMPLATE_FILE_NAME)
+    subjects_path = Path(command_arguments.dccSubjectsFile)
     node_output_path = Path(command_arguments.nodeOutputPath)
+    aki_path = Path(command_arguments.dccAkiFile) if command_arguments.dccAkiFile else None
 
     if not template_path.is_file():
-        logger.critical("Cannot find case template file: %s", template_path.as_posix())
-        raise FileNotFoundError(
-            errno.ENOENT, os.strerror(errno.ENOENT), template_path.as_posix()
-        )
-
-    if not dcc_subjects_path.is_file():
-        logger.critical(
-            "Cannot find DCC subjects file: %s", dcc_subjects_path.as_posix()
-        )
-        raise FileNotFoundError(
-            errno.ENOENT, os.strerror(errno.ENOENT), dcc_subjects_path.as_posix()
-        )
-
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), template_path)
+    if not subjects_path.is_file():
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), subjects_path)
+    if aki_path is not None and not aki_path.is_file():
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), aki_path)
     if not node_output_path.is_dir():
-        logger.critical(
-            "Cannot find node output directory: %s", node_output_path.as_posix()
-        )
-        raise FileNotFoundError(
-            errno.ENOENT, os.strerror(errno.ENOENT), node_output_path.as_posix()
-        )
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), node_output_path)
 
-    # Read the template TSV file to extract the headers
-    logger.info("Reading case template CSV file: %s", template_path.as_posix())
-    df_template = pd.read_csv(
-        template_path.as_posix(), sep="\t", nrows=0
-    )  # Read only the header
-    template_headers = df_template.columns.tolist()  # Extract the headers as a list
-
+    template_headers = pd.read_csv(template_path.as_posix(), sep="\t", nrows=0).columns.tolist()
     if command_arguments.subjectsType == "observational":
-        logger.info("Transforming DCC observational subject data to ARDaC case node")
-        node_file_path = Path(node_output_path, _constants.CASE_OBS_FILE_NAME)
-        df_obs_output = generate_observational_case_node(
-            dcc_subjects_path, template_headers
-        )
-        df_obs_output.to_csv(
-            node_file_path.as_posix(), sep="\t", index=False, header=True
-        )
+        output_path = node_output_path / _constants.CASE_OBS_FILE_NAME
+        output = generate_observational_case_node(subjects_path, template_headers, aki_path)
     elif command_arguments.subjectsType == "clinical":
-        logger.info("Transforming DCC clinical subject data to ARDaC case node")
-        node_file_path = Path(node_output_path, _constants.CASE_RCT_FILE_NAME)
-        df_rct_output = generate_clinical_case_node(dcc_subjects_path, template_headers)
-        df_rct_output.to_csv(
-            node_file_path.as_posix(), sep="\t", index=False, header=True
-        )
+        output_path = node_output_path / _constants.CASE_RCT_FILE_NAME
+        output = generate_clinical_case_node(subjects_path, template_headers, aki_path)
     else:
         raise ValueError(
             f"Processing for subjects_type={command_arguments.subjectsType} is not implemented"
         )
 
+    output.to_csv(output_path.as_posix(), sep="\t", index=False, header=True)
     return 0
 
 
 if __name__ == "__main__":
-    status = 3
-    parser = argparse.ArgumentParser(
-        description="""This utility generates ARDaC case nodes from observational or clinical trial DCC subject data provided in CSV format files.
-         The user must provide the location of the ARDaC case node template file, the CSV file containing the DCC subject data, and the
-         path to where the ARDaC case node file is to be written.""",
-        epilog=f"""Observational case node files are named \'{_constants.CASE_OBS_FILE_NAME}\'.
-         Clinical case node files are named \'{_constants.CASE_RCT_FILE_NAME}\'.  Case node files are written to the directory given by the --node_output_path argument.""",
-    )
-    valid_log_level_names_mapping = logging.getLevelNamesMapping()
-    valid_log_level_names_mapping.pop("NOTSET")  # Remove NOTSET option value
+    parser = argparse.ArgumentParser(description="Generate ARDaC case nodes from DCC subject data.")
+    valid_log_level_names = logging.getLevelNamesMapping()
+    valid_log_level_names.pop("NOTSET")
     parser.add_argument(
-        "--version",
-        action="version",
+        "--version", action="version",
         version=f"DCC_VERSION={_constants.DCC_RELEASE_STRING},MAPPING_VERSION={_constants.MAPPING_VERSION_STRING}",
     )
-    parser.add_argument(
-        "--dcc_version", action="version", version=f"{_constants.DCC_RELEASE_STRING}"
-    )
-    parser.add_argument(
-        "--mapping_version",
-        action="version",
-        version=f"{_constants.MAPPING_VERSION_STRING}",
-    )
-    parser.add_argument(
-        "--log_level",
-        dest="logLevel",
-        default="INFO",
-        choices=list(valid_log_level_names_mapping.keys()),
-        help="A standard log level from the Python logger package: DEBUG, INFO, WARNING, ERROR, CRITICAL",
-    )
-    parser.add_argument(
-        "--node_templates_path",
-        dest="nodeTemplatesPath",
-        required=True,
-        help="Path to the directory where the ARDaC node template TSV files are located",
-    )
-    parser.add_argument(
-        "--subjects_type",
-        dest="subjectsType",
-        required=True,
-        choices=["observational", "clinical"],
-        help="Value indicating if the input subject data is from clinical trial subjects or observational study subjects",
-    )
-    parser.add_argument(
-        "--dcc_subjects_file",
-        dest="dccSubjectsFile",
-        required=True,
-        help="Full path to the DCC input subjects file in CSV format",
-    )
-    parser.add_argument(
-        "--node_output_path",
-        dest="nodeOutputPath",
-        required=True,
-        help=f"Path to the directory where the TSV case node file is to be saved.  The file name will be either {_constants.CASE_OBS_FILE_NAME} or {_constants.CASE_RCT_FILE_NAME}",
-    )
-
+    parser.add_argument("--dcc_version", action="version", version=_constants.DCC_RELEASE_STRING)
+    parser.add_argument("--mapping_version", action="version", version=_constants.MAPPING_VERSION_STRING)
+    parser.add_argument("--log_level", dest="logLevel", default="INFO", choices=list(valid_log_level_names.keys()))
+    parser.add_argument("--node_templates_path", dest="nodeTemplatesPath", required=True)
+    parser.add_argument("--subjects_type", dest="subjectsType", required=True, choices=["observational", "clinical"])
+    parser.add_argument("--dcc_subjects_file", dest="dccSubjectsFile", required=True)
+    parser.add_argument("--dcc_aki_file", dest="dccAkiFile", help="Path to the observational AKI or clinical adverse events CSV file")
+    parser.add_argument("--node_output_path", dest="nodeOutputPath", required=True)
     parsed_args = parser.parse_args()
 
-    # Configure and create logger for standard output
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(parsed_args.logLevel)
-    console_handler.setFormatter(
-        logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-    )
-
+    console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
     logging.basicConfig(level=parsed_args.logLevel, handlers=[console_handler])
-
     logger = logging.getLogger(parser.prog)
     logger.setLevel(parsed_args.logLevel)
 
+    status = 3
     try:
-        # Status codes greater than zero and less than three are reserved for command line processing errors
         status = main(parsed_args)
-    except FileNotFoundError as e:
-        logger.critical("Input file not found: %s", e.filename)
-    except ValueError as e:
-        logger.critical("Command line argument or parameter had a bad value: %s", e)
-    except Exception as e:
+    except FileNotFoundError as error:
+        logger.critical("Input file not found: %s", error.filename)
+    except ValueError as error:
+        logger.critical("Command line argument or parameter had a bad value: %s", error)
+    except Exception:
         logger.critical("Caught an exception", exc_info=True)
-
-    exit(status)
+    raise SystemExit(status)

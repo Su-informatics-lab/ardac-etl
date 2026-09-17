@@ -53,6 +53,10 @@ params {
    // Subjects input files
    observational_subjects_csv_file = "OBS_SUBJECTS.csv"
    clinical_subjects_csv_file = "RCT_SUBJECTS.csv"
+
+   // AKI input files
+   observational_aki_csv_file = "OBS_ABX_AKI_CX.csv"
+   clinical_aki_csv_file = "RCT_ADVERSE_EVENTS.csv"
    
    // Liver scores input files
    observational_liver_scores_csv_file = "OBS_LIVERSCORES.csv"
@@ -69,6 +73,9 @@ params {
    // SOC files
    observational_soc_csv_file = "OBS_SOC.csv"
    clinical_soc_csv_file = "RCT_SOC.csv"
+
+   // Additional observational follow-up inputs
+   observational_labs_csv_file = "OBS_LABS.csv"
 
    // Audit files
    observational_audit_csv_file = "OBS_AUDIT.csv"

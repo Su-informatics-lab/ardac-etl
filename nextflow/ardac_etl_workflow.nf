@@ -19,6 +19,8 @@ workflow {
    node_output_path = output_dir.resolve(params.ardac_nodes_directory)
    dcc_obs_subjects_file = obs_input_dir.resolve(params.observational_subjects_csv_file)
    dcc_rct_subjects_file = rct_input_dir.resolve(params.clinical_subjects_csv_file)
+   dcc_obs_aki_file = obs_input_dir.resolve(params.observational_aki_csv_file)
+   dcc_rct_aki_file = rct_input_dir.resolve(params.clinical_aki_csv_file)
    dcc_obs_liver_scores_file = obs_input_dir.resolve(params.observational_liver_scores_csv_file)
    dcc_rct_liver_scores_file = rct_input_dir.resolve(params.clinical_liver_scores_csv_file)
    dcc_obs_med_info_file = obs_input_dir.resolve(params.observational_med_info_csv_file)
@@ -29,6 +31,7 @@ workflow {
    dcc_rct_vitals_file = rct_input_dir.resolve(params.clinical_vitals_csv_file)
    dcc_obs_soc_file = obs_input_dir.resolve(params.observational_soc_csv_file)
    dcc_rct_soc_file = rct_input_dir.resolve(params.clinical_soc_csv_file)
+   dcc_obs_labs_file = obs_input_dir.resolve(params.observational_labs_csv_file)
    dcc_obs_audit_file = obs_input_dir.resolve(params.observational_audit_csv_file)
    dcc_rct_audit_file = rct_input_dir.resolve(params.clinical_audit_csv_file)
    
@@ -43,6 +46,8 @@ workflow {
       dcc_vitals_file = dcc_obs_vitals_file
       dcc_soc_file = dcc_obs_soc_file
       dcc_audit_file = dcc_obs_audit_file
+      dcc_aki_file = dcc_obs_aki_file
+      dcc_labs_file = dcc_obs_labs_file
    } else if (subjects_type == 'clinical') {
       subjects_val = 'rct'
       dcc_subjects_file = dcc_rct_subjects_file
@@ -51,6 +56,8 @@ workflow {
       dcc_vitals_file = dcc_rct_vitals_file
       dcc_soc_file = dcc_rct_soc_file
       dcc_audit_file = dcc_rct_audit_file
+      dcc_aki_file = dcc_rct_aki_file
+      dcc_labs_file = dcc_obs_labs_file
    } else {
       log.info "Unsupported subject type given: ${subjects_type}"
       error "Unsupported subjects type: ${subjects_type}"
@@ -90,11 +97,11 @@ workflow {
    //   }
    // }
 
-   CASE_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type, subjects_val)
+   CASE_NODE_MAPPER(node_templates_path, dcc_subjects_file, dcc_aki_file, node_output_path, subjects_type, subjects_val)
 
    DEMOGRAPHIC_NODE_MAPPER(node_templates_path, dcc_subjects_file, node_output_path, subjects_type, subjects_val, CASE_NODE_MAPPER.out.case_node_file)
    
-   FOLLOWUP_NODE_MAPPER(node_templates_path, dcc_subjects_file, dcc_liver_scores_file, dcc_med_info_file, dcc_vitals_file, dcc_soc_file, node_output_path, subjects_type, subjects_val, CASE_NODE_MAPPER.out.case_node_file)
+   FOLLOWUP_NODE_MAPPER(node_templates_path, dcc_subjects_file, dcc_liver_scores_file, dcc_med_info_file, dcc_vitals_file, dcc_soc_file, dcc_aki_file, dcc_labs_file, node_output_path, subjects_type, subjects_val, CASE_NODE_MAPPER.out.case_node_file)
 
    AUDIT_NODE_MAPPER(node_templates_path, dcc_audit_file, node_output_path, subjects_type, subjects_val, CASE_NODE_MAPPER.out.case_node_file)
 }

@@ -25,6 +25,8 @@ process CASE_NODE_MAPPER {
         path node_templates_path
         // Path to the DCC subject file
         path dcc_subjects_file 
+      // Path to the DCC AKI or adverse events file
+      path dcc_aki_file
         // Path to the output directory
         path node_output_path
         // The subjects type
@@ -42,6 +44,7 @@ process CASE_NODE_MAPPER {
        --node_templates_path ${node_templates_path} \
        --subjects_type ${subjects_type} \
        --dcc_subjects_file ${dcc_subjects_file} \
+      --dcc_aki_file ${dcc_aki_file} \
        --node_output_path ${node_output_path}
     """
 }
@@ -97,6 +100,10 @@ process CASE_NODE_MAPPER {
       path dcc_vitals_file
       // Path to the DCC soc file
       path dcc_soc_file
+      // Optional path to the DCC AKI or adverse events file
+      path dcc_aki_file
+      // Optional path to the DCC observational labs file
+      path dcc_labs_file
       // Path to the output directory
       path node_output_path
       // The subjects type
@@ -120,6 +127,8 @@ process CASE_NODE_MAPPER {
        --dcc_med_info_file ${dcc_med_info_file} \
        --dcc_vitals_file ${dcc_vitals_file} \
        --dcc_soc_file ${dcc_soc_file} \
+      --dcc_abx_aki_file ${dcc_aki_file} \
+      --dcc_labs_file ${dcc_labs_file} \
        --node_output_path ${node_output_path}
    """
  }

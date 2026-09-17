@@ -15,6 +15,8 @@ def generate_observational_follow_up_node(
     obs_soc_path: Path,
     obs_case_path: Path,
     template_headers: list[str],
+    obs_abx_aki_path: Path | None = None,
+    obs_labs_path: Path | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     This function takes the path to the DCC observational liver scores, medical information, vitals,
@@ -68,8 +70,18 @@ def generate_observational_follow_up_node(
     logger.info("Done reading observational vitals file")
 
     logger.info("Reading the observational SOC file: %s", obs_soc_path.as_posix())
-    df_obs_soc_input = pd.read_csv(obs_vitals_path.as_posix(), sep=",", dtype=str)
-    logger.info("Done reading observational vitals file")
+    df_obs_soc_input = pd.read_csv(obs_soc_path.as_posix(), sep=",", dtype=str)
+    logger.info("Done reading observational SOC file")
+
+    df_obs_abx_aki_input = None
+    if obs_abx_aki_path is not None:
+        logger.info("Reading the observational ABX/AKI file: %s", obs_abx_aki_path.as_posix())
+        df_obs_abx_aki_input = pd.read_csv(obs_abx_aki_path.as_posix(), sep=",", dtype=str)
+
+    df_obs_labs_input = None
+    if obs_labs_path is not None:
+        logger.info("Reading the observational labs file: %s", obs_labs_path.as_posix())
+        df_obs_labs_input = pd.read_csv(obs_labs_path.as_posix(), sep=",", dtype=str)
 
     logger.info(
         "Reading the observational ARDaC case file: %s", obs_case_path.as_posix()
@@ -294,6 +306,20 @@ def generate_observational_follow_up_node(
                 "endoulcbled_duod", None
             )
 
+    for input_frame, field_name, source_name in [
+        (df_obs_abx_aki_input, "lille_score", "lille"),
+        (df_obs_labs_input, "maddreys_score", "maddrey"),
+    ]:
+        if input_frame is None:
+            continue
+        for _, row in input_frame.iterrows():
+            if row["redcap_event_name"] not in extensions:
+                continue
+            submitter_id = f"{row['usubjid']}_obs{extensions[row['redcap_event_name']]}"
+            output_row_index = df_output[df_output["*submitter_id"] == submitter_id].index
+            if not output_row_index.empty:
+                df_output.loc[output_row_index[0], field_name] = row.get(source_name, None)
+
     # Final check: Remove empty rows and log them in a QC file
     qc_records = []  # To store QC information for deleted rows
 
@@ -404,8 +430,8 @@ def generate_clinical_follow_up_node(
     logger.info("Done reading clinical vitals file")
 
     logger.info("Reading the clinical SOC file: %s", rct_soc_path.as_posix())
-    df_rct_soc_input = pd.read_csv(rct_vitals_path.as_posix(), sep=",", dtype=str)
-    logger.info("Done reading clinical vitals file")
+    df_rct_soc_input = pd.read_csv(rct_soc_path.as_posix(), sep=",", dtype=str)
+    logger.info("Done reading clinical SOC file")
 
     logger.info("Reading the clinical ARDaC case file: %s", rct_case_path.as_posix())
     df_rct_case_input = pd.read_csv(rct_case_path.as_posix(), sep="\t", dtype=str)
@@ -471,6 +497,10 @@ def generate_clinical_follow_up_node(
             )
             df_output_rct.loc[output_row_index, "liver_score_date"] = row.get(
                 "liverdat", None
+            )
+            df_output_rct.loc[output_row_index, "lille_score"] = row.get("lille", None)
+            df_output_rct.loc[output_row_index, "maddreys_score"] = row.get(
+                "maddrey", None
             )
 
     # JRM: This was commented out in the Python workbook for some reason
@@ -692,6 +722,16 @@ def main(command_arguments: argparse.Namespace) -> int:
     dcc_med_info_path = Path(command_arguments.dccMedInfoFile)
     dcc_vitals_path = Path(command_arguments.dccVitalsFile)
     dcc_soc_path = Path(command_arguments.dccSOCFile)
+    dcc_abx_aki_path = (
+        Path(command_arguments.dccAbxAkiFile)
+        if command_arguments.dccAbxAkiFile
+        else None
+    )
+    dcc_labs_path = (
+        Path(command_arguments.dccLabsFile)
+        if command_arguments.dccLabsFile
+        else None
+    )
     node_output_path = Path(command_arguments.nodeOutputPath)
 
     if not template_path.is_file():
@@ -729,6 +769,13 @@ def main(command_arguments: argparse.Namespace) -> int:
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), dcc_soc_path.as_posix()
         )
+
+    for input_path, description in [
+        (dcc_abx_aki_path, "DCC ABX/AKI"),
+        (dcc_labs_path, "DCC labs"),
+    ]:
+        if input_path is not None and not input_path.is_file():
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), input_path)
 
     if not node_output_path.is_dir():
         logger.critical(
@@ -775,6 +822,8 @@ def main(command_arguments: argparse.Namespace) -> int:
             dcc_soc_path,
             case_file_path,
             template_headers,
+            dcc_abx_aki_path,
+            dcc_labs_path,
         )
         df_obs_output.to_csv(
             node_file_path.as_posix(), sep="\t", index=False, header=True
@@ -888,6 +937,16 @@ if __name__ == "__main__":
         dest="dccSOCFile",
         required=True,
         help="Full path to the DCC input SOC file in CSV format",
+    )
+    parser.add_argument(
+        "--dcc_abx_aki_file",
+        dest="dccAbxAkiFile",
+        help="Full path to the DCC observational ABX/AKI file in CSV format",
+    )
+    parser.add_argument(
+        "--dcc_labs_file",
+        dest="dccLabsFile",
+        help="Full path to the DCC observational labs file in CSV format",
     )
     parser.add_argument(
         "--node_output_path",
