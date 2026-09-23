@@ -148,7 +148,7 @@ class UpdateAliquotDistributionTests(unittest.TestCase):
                 "missing_catalog": 1,
                 "extraneous_protocol": 1,
                 "missing_ardac": 2,
-                "redundant": 1,
+                "switched_lab": 1,
                 "inconsistent_availability": 1,
             },
         )
@@ -159,10 +159,19 @@ class UpdateAliquotDistributionTests(unittest.TestCase):
         self.assertEqual(rows[0]["labs.submitter_id"], "lab_13")
         self.assertNotIn("id", rows[0])
 
+        with (self.output / "aliquots_laboratory_switch.tsv").open(
+            encoding="utf-8", newline=""
+        ) as handle:
+            switched_rows = list(csv.DictReader(handle, delimiter="\t"))
+        self.assertEqual(list(switched_rows[0]), TEMPLATE_COLUMNS)
+        self.assertEqual(switched_rows[0]["*submitter_id"], "redundant")
+        self.assertEqual(switched_rows[0]["labs.submitter_id"], "lab_12")
+        self.assertEqual(switched_rows[0]["specimen_type"], "Serum")
+        self.assertNotIn("id", switched_rows[0])
+
         expected_reports = {
             "missing_catalog_biospecimens.tsv": "missing-catalog",
             "extraeneous_collection_protocols.tsv": "extra",
-            "redundant_manifest_records.tsv": "redundant",
             "inconsistent_availability_status.tsv": "bad-status",
         }
         for filename, barcode in expected_reports.items():

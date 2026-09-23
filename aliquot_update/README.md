@@ -28,8 +28,12 @@ the supplied submission template, along with:
 - `aliquots_laboratory_switch.tsv`
 - `inconsistent_availability_status.tsv`
 
-Every QC file is written even when it has no findings. A malformed input schema
-or an unknown distribution protocol is a fatal error and is logged to stderr.
+Every QC file is written even when it has no findings.
+`aliquots_laboratory_switch.tsv` uses the exact Gen3 submission schema from the
+supplied aliquot template and contains the original matching ARDaC records,
+including their current lab assignments. The other QC reports contain one
+barcode column. A malformed input schema or an unknown distribution protocol is
+a fatal error and is logged to stderr.
 
 ## Extending PI mappings
 

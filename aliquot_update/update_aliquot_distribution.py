@@ -366,8 +366,17 @@ def update_aliquot_distribution(
     output_directory.mkdir(parents=True, exist_ok=True)
     for category, filename in QC_FILENAMES.items():
         report_path = output_directory / filename
-        _write_single_column(report_path, qc[category])
-        LOGGER.info("Generated %s with %d entries", report_path, len(qc[category]))
+        if category == "switched_lab":
+            switched_aliquots = [
+                aliquot_by_barcode[barcode] for barcode in sorted(qc[category])
+            ]
+            entry_count = _write_updates(
+                report_path, template.columns, switched_aliquots
+            )
+        else:
+            _write_single_column(report_path, qc[category])
+            entry_count = len(qc[category])
+        LOGGER.info("Generated %s with %d entries", report_path, entry_count)
 
     rejected = set().union(*qc.values())
     updated_rows: list[dict[str, str]] = []
