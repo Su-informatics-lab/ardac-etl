@@ -1,5 +1,15 @@
 # Aliquot distribution updater
 
+`validate_submitter_ids.py` checks the `submitter_id` values in an aliquot TSV
+using the biospecimen-code rules in `format_validators.py`. It writes each
+invalid value and its validation reason to the requested log TSV:
+
+```bash
+python aliquot_update/validate_submitter_ids.py \
+  --input /path/to/aliquots.tsv \
+  --log-file /path/to/validation-errors.tsv
+```
+
 `update_aliquot_distribution.py` validates a biobank catalog, one or more
 distribution manifests, and the current Gen3 aliquot and lab dumps. It writes
 Gen3-ready aliquot updates plus one TSV report for each specified QC category.
