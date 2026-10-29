@@ -9,6 +9,8 @@ source ${MAPPERS_HOME}/test/test_config.bash
 DCC_OBS_SUBJECTS_FILE=${DCC_OBS_PATH}/OBS_SUBJECTS.csv
 DCC_RCT_SUBJECTS_FILE=${DCC_RCT_PATH}/RCT_SUBJECTS.csv
 
+DCC_OBS_AKI_FILE=${DCC_OBS_PATH}/OBS_ABX_AKI_CX.csv
+
 mapper_script=${MAPPERS_HOME}/python/ardac/etl/case_node_mapper.py
 echo "INFO($this_script_name): mapper_script=${mapper_script}"
 
@@ -21,6 +23,6 @@ echo "INFO($this_script_name): dcc_version='${dcc_version}'"
 mapping_version=$(python ${mapper_script} --mapping_version)
 echo "INFO($this_script_name): mapping_version='${mapping_version}'"
 
-python ${mapper_script} --log_level DEBUG --node_templates_path ${NODE_TEMPLATES_PATH} --subjects_type observational --dcc_subjects_file ${DCC_OBS_SUBJECTS_FILE} --node_output_path ${NODE_OUTPUT_PATH}
+python ${mapper_script} --log_level DEBUG --node_templates_path ${NODE_TEMPLATES_PATH} --subjects_type observational --dcc_subjects_file ${DCC_OBS_SUBJECTS_FILE} --dcc_aki_file ${DCC_OBS_AKI_FILE} --node_output_path ${NODE_OUTPUT_PATH}
 
 python ${mapper_script} --log_level DEBUG --node_templates_path ${NODE_TEMPLATES_PATH} --subjects_type clinical --dcc_subjects_file ${DCC_RCT_SUBJECTS_FILE} --node_output_path ${NODE_OUTPUT_PATH}
