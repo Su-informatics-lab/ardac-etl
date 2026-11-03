@@ -64,6 +64,7 @@ def generate_observational_audit_node(
 
         if not input_row.empty:
             input_row = input_row.iloc[0]  # Extract the first matching row
+            input_row = input_row.str.replace(r"<[^>]*>", "", regex=True)
             # Populate df_obs_output
             df_obs_output.loc[:, "*type"] = "audit"
             df_obs_output.loc[:, "project_id"] = "ARDaC-AlcHepNet"
@@ -149,6 +150,7 @@ def generate_clinical_audit_node(
 
         if not input_row.empty:
             input_row = input_row.iloc[0]  # Extract the first matching row
+            input_row = input_row.str.replace(r"<[^>]*>", "", regex=True)
             # Populate df_rct_output
             df_rct_output.loc[:, "*type"] = "audit"
             df_rct_output.loc[:, "project_id"] = "ARDaC-AlcHepNet"
