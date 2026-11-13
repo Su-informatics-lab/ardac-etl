@@ -34,7 +34,8 @@ the supplied submission template, along with:
 
 - `missing_catalog_biospecimens.tsv`
 - `extraeneous_collection_protocols.tsv` (name preserved from the specification)
-- `missing_ardac_biospecimens.tsv`
+- `missing_ardac_biospecimens.tsv` (catalog biospecimens with no ARDaC aliquot)
+- `missing_distributed_ardac_biospecimens.tsv` (manifest biospecimens with no ARDaC aliquot)
 - `aliquots_laboratory_switch.tsv`
 - `inconsistent_availability_status.tsv`
 
@@ -42,8 +43,10 @@ Every QC file is written even when it has no findings.
 `aliquots_laboratory_switch.tsv` uses the exact Gen3 submission schema from the
 supplied aliquot template and contains the original matching ARDaC records,
 including their current lab assignments. The other QC reports contain one
-barcode column. A malformed input schema or an unknown distribution protocol is
-a fatal error and is logged to stderr.
+barcode column. The catalog-wide missing-aliquot report can also include
+biospecimens that do not appear in the supplied distribution manifests. A
+malformed input schema or an unknown distribution protocol is a fatal error and
+is logged to stderr.
 
 ## Extending PI mappings
 

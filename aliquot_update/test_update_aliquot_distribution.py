@@ -76,7 +76,14 @@ class UpdateAliquotDistributionTests(unittest.TestCase):
 
     def test_generates_update_and_each_qc_category(self) -> None:
         catalog_rows = []
-        for barcode in ("good", "extra", "missing-ardac", "redundant", "bad-status"):
+        for barcode in (
+            "good",
+            "extra",
+            "missing-ardac",
+            "redundant",
+            "bad-status",
+            "catalog-only-missing",
+        ):
             catalog_rows.append(
                 complete_row(
                     CATALOG_COLUMNS,
@@ -90,6 +97,8 @@ class UpdateAliquotDistributionTests(unittest.TestCase):
                 )
             )
         catalog_rows[-1]["Availability Status"] = "Available"
+        catalog_rows[-1]["Distribution Date"] = ""
+        catalog_rows[-2]["Availability Status"] = "Available"
         write_tsv(self.catalog, sorted(CATALOG_COLUMNS), catalog_rows)
 
         manifest_rows = []
@@ -148,6 +157,7 @@ class UpdateAliquotDistributionTests(unittest.TestCase):
                 "missing_catalog": 1,
                 "extraneous_protocol": 1,
                 "missing_ardac": 2,
+                "missing_distributed_ardac": 2,
                 "switched_lab": 1,
                 "inconsistent_availability": 1,
             },
@@ -178,6 +188,24 @@ class UpdateAliquotDistributionTests(unittest.TestCase):
             with (self.output / filename).open(encoding="utf-8", newline="") as handle:
                 report = list(csv.DictReader(handle, delimiter="\t"))
             self.assertEqual(report, [{"barcode": barcode}])
+
+        with (self.output / "missing_ardac_biospecimens.tsv").open(
+            encoding="utf-8", newline=""
+        ) as handle:
+            missing_ardac = list(csv.DictReader(handle, delimiter="\t"))
+        self.assertEqual(
+            missing_ardac,
+            [{"barcode": "catalog-only-missing"}, {"barcode": "missing-ardac"}],
+        )
+
+        with (self.output / "missing_distributed_ardac_biospecimens.tsv").open(
+            encoding="utf-8", newline=""
+        ) as handle:
+            missing_distributed_ardac = list(csv.DictReader(handle, delimiter="\t"))
+        self.assertEqual(
+            missing_distributed_ardac,
+            [{"barcode": "missing-ardac"}, {"barcode": "missing-catalog"}],
+        )
 
     def test_missing_required_column_fails_before_creating_output(self) -> None:
         write_tsv(self.catalog, ["Barcode"], [])

@@ -116,6 +116,7 @@ QC_FILENAMES = {
     "missing_catalog": "missing_catalog_biospecimens.tsv",
     "extraneous_protocol": "extraeneous_collection_protocols.tsv",
     "missing_ardac": "missing_ardac_biospecimens.tsv",
+    "missing_distributed_ardac": "missing_distributed_ardac_biospecimens.tsv",
     "switched_lab": "aliquots_laboratory_switch.tsv",
     "inconsistent_availability": "inconsistent_availability_status.tsv",
 }
@@ -338,6 +339,11 @@ def update_aliquot_distribution(
     lab_lookup = _lab_lookup(labs.rows)
 
     qc: dict[str, set[str]] = {category: set() for category in QC_FILENAMES}
+    qc["missing_ardac"].update(
+        barcode
+        for barcode in catalog_by_barcode
+        if barcode not in aliquot_by_barcode
+    )
     manifest_barcodes: set[str] = set()
     for row in manifests:
         barcode = row["Specimen Barcode"].strip()
@@ -357,11 +363,21 @@ def update_aliquot_distribution(
             has_date = bool(catalog_row["Distribution Date"].strip())
             if not distributed or not has_date:
                 qc["inconsistent_availability"].add(barcode)
+         
         aliquot_row = aliquot_by_barcode.get(barcode)
         if aliquot_row is None:
-            qc["missing_ardac"].add(barcode)
+            qc["missing_distributed_ardac"].add(barcode)
         elif aliquot_row["labs.submitter_id"].strip() not in {"", "lab_0"}:
-            qc["switched_lab"].add(barcode)
+            catalog_row = catalog_by_barcode[barcode]
+            if catalog_row is not None:
+               destination_lab_id = _distribution_lab_id(
+                  catalog_row["Distribution Protocol Short Title"].strip(), lab_lookup
+               )
+               # If the aliquot is changing location 
+               if aliquot_row["labs.submitter_id"].strip() != destination_lab_id:
+                   qc["switched_lab"].add(barcode)
+            else: 
+               qc["switched_lab"].add(barcode)
 
     output_directory.mkdir(parents=True, exist_ok=True)
     for category, filename in QC_FILENAMES.items():
